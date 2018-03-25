@@ -388,7 +388,7 @@ QList<Entry*> BrowserService::searchEntries(Database* db, const QString& hostnam
         return entries;
     }
 
-    for (Entry* entry : EntrySearcher().search(hostname, rootGroup, Qt::CaseInsensitive)) {
+    for (Entry* entry : EntrySearcher().search(hostname, rootGroup)) {
         QString title = entry->title();
         QString url = entry->url();
 
