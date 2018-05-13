@@ -39,6 +39,7 @@
 #include "gui/UnlockDatabaseDialog.h"
 #include "gui/entry/EntryView.h"
 #include "gui/group/GroupView.h"
+#include "gui/wizard/NewDatabaseWizard.h"
 
 DatabaseManagerStruct::DatabaseManagerStruct()
     : dbWidget(nullptr)
@@ -87,22 +88,20 @@ void DatabaseTabWidget::toggleTabbar()
 
 void DatabaseTabWidget::newDatabase()
 {
-    DatabaseManagerStruct dbStruct;
-    Database* db = new Database();
-    db->rootGroup()->setName(tr("Root", "Root group"));
-    dbStruct.dbWidget = new DatabaseWidget(db, this);
+    NewDatabaseWizard wizard;
+    wizard.exec();
 
-    CompositeKey emptyKey;
-    db->setKey(emptyKey);
+    auto db = wizard.takeDatabase();
+    if (db) {
+        DatabaseManagerStruct dbStruct;
+        dbStruct.dbWidget = new DatabaseWidget(db, this);
+        insertDatabase(db, dbStruct);
 
-    insertDatabase(db, dbStruct);
-
-    if (!saveDatabaseAs(db)) {
-        closeDatabase(db);
-        return;
+        if (!saveDatabaseAs(db)) {
+            closeDatabase(db);
+            return;
+        }
     }
-
-    dbStruct.dbWidget->switchToMasterKeyChange(true);
 }
 
 void DatabaseTabWidget::openDatabase()

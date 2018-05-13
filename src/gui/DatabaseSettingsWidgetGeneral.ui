@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>DatabaseSettingsWidgetGeneral</class>
- <widget class="QWidget" name="DatabaseSettingsWidgetGeneral">
+ <widget class="QWizardPage" name="DatabaseSettingsWidgetGeneral">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>293</width>
+    <height>317</height>
+   </rect>
+  </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="leftMargin">
     <number>0</number>

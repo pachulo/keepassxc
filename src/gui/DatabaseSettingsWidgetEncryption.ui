@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>DatabaseSettingsWidgetEncryption</class>
- <widget class="QWidget" name="DatabaseSettingsWidgetEncryption">
+ <widget class="QWizardPage" name="DatabaseSettingsWidgetEncryption">
   <layout class="QFormLayout" name="formLayout">
    <property name="leftMargin">
     <number>0</number>

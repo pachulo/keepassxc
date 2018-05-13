@@ -105,6 +105,8 @@ set(keepassx_SOURCES
     gui/DatabaseOpenWidget.cpp
     gui/DatabaseRepairWidget.cpp
     gui/DatabaseSettingsWidget.cpp
+    gui/DatabaseSettingsWidgetGeneral.cpp
+    gui/DatabaseSettingsWidgetEncryption.cpp
     gui/DatabaseTabWidget.cpp
     gui/DatabaseWidget.cpp
     gui/DatabaseWidgetStateSync.cpp
@@ -151,6 +153,9 @@ set(keepassx_SOURCES
     gui/group/EditGroupWidget.cpp
     gui/group/GroupModel.cpp
     gui/group/GroupView.cpp
+    gui/wizard/NewDatabaseWizard.cpp
+    gui/wizard/NewDatabaseWizardPageGeneral.cpp
+    gui/wizard/NewDatabaseWizardPageEncryption.cpp
     keys/ChallengeResponseKey.h
     keys/CompositeKey.cpp
     keys/drivers/YubiKey.h
