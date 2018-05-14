@@ -15,19 +15,28 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "NewDatabaseWizardPageEncryption.h"
-#include "../dbsettings/DatabaseSettingsPageEncryption.h"
+#include "DatabaseSettingsPage.h"
+#include "core/Database.h"
 
-NewDatabaseWizardPageEncryption::NewDatabaseWizardPageEncryption(QWidget* parent)
-    : NewDatabaseWizardPage(parent)
+#include <QWidget>
+
+DatabaseSettingsPage::DatabaseSettingsPage(QWidget* parent)
+    : SettingsPage(parent)
 {
-    setPageWidget(new DatabaseSettingsPageEncryption());
-
-    setTitle(tr("Encryption Settings"));
-    setSubTitle(tr("Here you can adjust the database encryption settings. "
-                   "Don't worry, you can change them later in the database settings."));
 }
 
-NewDatabaseWizardPageEncryption::~NewDatabaseWizardPageEncryption()
+DatabaseSettingsPage::~DatabaseSettingsPage()
 {
+}
+
+/**
+ * Load the database to be configured by this page and initialize the page.
+ * The page will NOT take ownership of the database.
+ *
+ * @param db database object to be configured
+ */
+void DatabaseSettingsPage::load(Database* db)
+{
+    m_db = db;
+    initializePage();
 }

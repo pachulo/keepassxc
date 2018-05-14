@@ -18,39 +18,16 @@
 #ifndef KEEPASSXC_NEWDATABASEWIZARDPAGEENCRYPTION_H
 #define KEEPASSXC_NEWDATABASEWIZARDPAGEENCRYPTION_H
 
-#include <QPointer>
-#include <QScopedPointer>
-#include <QWizardPage>
+#include "NewDatabaseWizardPage.h"
 
-class Database;
-class DatabaseSettingsWidgetEncryption;
-namespace Ui
-{
-class NewDatabaseWizardPageEncryption;
-}
-
-class NewDatabaseWizardPageEncryption : public QWizardPage
+class NewDatabaseWizardPageEncryption : public NewDatabaseWizardPage
 {
 Q_OBJECT
 
 public:
-    explicit NewDatabaseWizardPageEncryption(Database* db = nullptr, QWidget* parent = nullptr);
+    explicit NewDatabaseWizardPageEncryption(QWidget* parent = nullptr);
     Q_DISABLE_COPY(NewDatabaseWizardPageEncryption);
     ~NewDatabaseWizardPageEncryption() override;
-
-    void initializePage() override;
-    void initializePage(Database* db);
-    bool validatePage() override;
-
-private slots:
-    void toggleAdvancedSettings();
-    void updateDecryptionTime(int value);
-    void updateFormatCompatibility(int index);
-
-private:
-    const QScopedPointer<Ui::NewDatabaseWizardPageEncryption> m_ui;
-    QPointer<Database> m_db;
-    QPointer<DatabaseSettingsWidgetEncryption> m_advancedSettings;
 };
 
 #endif //KEEPASSXC_NEWDATABASEWIZARDPAGEENCRYPTION_H

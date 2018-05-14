@@ -104,9 +104,6 @@ set(keepassx_SOURCES
     gui/CloneDialog.cpp
     gui/DatabaseOpenWidget.cpp
     gui/DatabaseRepairWidget.cpp
-    gui/DatabaseSettingsWidget.cpp
-    gui/DatabaseSettingsWidgetGeneral.cpp
-    gui/DatabaseSettingsWidgetEncryption.cpp
     gui/DatabaseTabWidget.cpp
     gui/DatabaseWidget.cpp
     gui/DatabaseWidgetStateSync.cpp
@@ -153,8 +150,15 @@ set(keepassx_SOURCES
     gui/group/EditGroupWidget.cpp
     gui/group/GroupModel.cpp
     gui/group/GroupView.cpp
+    gui/settings/SettingsPage.cpp
+    gui/dbsettings/DatabaseSettingsWidget.cpp
+    gui/dbsettings/DatabaseSettingsPageGeneral.cpp
+    gui/dbsettings/DatabaseSettingsPageMetaData.cpp
+    gui/dbsettings/DatabaseSettingsPageEncryption.cpp
+    gui/dbsettings/DatabaseSettingsPage.cpp
     gui/wizard/NewDatabaseWizard.cpp
-    gui/wizard/NewDatabaseWizardPageGeneral.cpp
+    gui/wizard/NewDatabaseWizardPage.cpp
+    gui/wizard/NewDatabaseWizardPageMetaData.cpp
     gui/wizard/NewDatabaseWizardPageEncryption.cpp
     keys/ChallengeResponseKey.h
     keys/CompositeKey.cpp
@@ -170,8 +174,7 @@ set(keepassx_SOURCES
     streams/StoreDataStream.cpp
     streams/SymmetricCipherStream.cpp
     totp/totp.h
-    totp/totp.cpp
-)
+    totp/totp.cpp)
 if(APPLE)
     set(keepassx_SOURCES ${keepassx_SOURCES}
         core/ScreenLockListenerMac.h

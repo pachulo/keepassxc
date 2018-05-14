@@ -15,37 +15,24 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KEEPASSXC_DATABASESETTINGSWIDGETGENERAL_H
-#define KEEPASSXC_DATABASESETTINGSWIDGETGENERAL_H
+#ifndef KEEPASSXC_NEWDATABASEWIZARDPAGEMETADATA_H
+#define KEEPASSXC_NEWDATABASEWIZARDPAGEMETADATA_H
 
-#include <QWizardPage>
+#include "NewDatabaseWizardPage.h"
+
 #include <QPointer>
 #include <QScopedPointer>
 
 class Database;
-namespace Ui
-{
-class DatabaseSettingsWidgetGeneral;
-}
 
-class DatabaseSettingsWidgetGeneral : public QWizardPage
+class NewDatabaseWizardPageMetaData : public NewDatabaseWizardPage
 {
 Q_OBJECT
 
 public:
-    explicit DatabaseSettingsWidgetGeneral(Database* db = nullptr, QWidget* parent = nullptr);
-    Q_DISABLE_COPY(DatabaseSettingsWidgetGeneral);
-    ~DatabaseSettingsWidgetGeneral() override;
-
-    void initializePage() override;
-    void initializePage(Database* db);
-    bool validatePage() override;
-
-private:
-    void truncateHistories();
-
-    const QScopedPointer<Ui::DatabaseSettingsWidgetGeneral> m_ui;
-    QPointer<Database> m_db;
+    explicit NewDatabaseWizardPageMetaData(QWidget* parent = nullptr);
+    Q_DISABLE_COPY(NewDatabaseWizardPageMetaData);
+    ~NewDatabaseWizardPageMetaData() override;
 };
 
-#endif //KEEPASSXC_DATABASESETTINGSWIDGETGENERAL_H
+#endif //KEEPASSXC_NEWDATABASEWIZARDPAGEMETADATA_H

@@ -43,7 +43,7 @@
 #include "gui/Clipboard.h"
 #include "gui/CloneDialog.h"
 #include "gui/DatabaseOpenWidget.h"
-#include "gui/DatabaseSettingsWidget.h"
+#include "gui/dbsettings/DatabaseSettingsWidget.h"
 #include "gui/DetailsWidget.h"
 #include "gui/KeePass1OpenWidget.h"
 #include "gui/MessageBox.h"

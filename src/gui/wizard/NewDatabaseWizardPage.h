@@ -15,46 +15,47 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KEEPASSXC_DATABASESETTINGSWIDGETENCRYPTION_H
-#define KEEPASSXC_DATABASESETTINGSWIDGETENCRYPTION_H
+#ifndef KEEPASSXC_NEWDATABASEWIZARDPAGE_H
+#define KEEPASSXC_NEWDATABASEWIZARDPAGE_H
 
 #include <QPointer>
 #include <QScopedPointer>
 #include <QWizardPage>
 
 class Database;
+class DatabaseSettingsPage;
 namespace Ui
 {
-class DatabaseSettingsWidgetEncryption;
+class NewDatabaseWizardPage;
 }
 
-class DatabaseSettingsWidgetEncryption: public QWizardPage
+/**
+ * Pure-virtual base class for "New Database" setup wizard pages
+ */
+class NewDatabaseWizardPage : public QWizardPage
 {
 Q_OBJECT
 
 public:
-    explicit DatabaseSettingsWidgetEncryption(Database* db = nullptr, QWidget* parent = nullptr);
-    Q_DISABLE_COPY(DatabaseSettingsWidgetEncryption);
-    ~DatabaseSettingsWidgetEncryption() override;
+    explicit NewDatabaseWizardPage(QWidget* parent = nullptr);
+    Q_DISABLE_COPY(NewDatabaseWizardPage);
+    ~NewDatabaseWizardPage();
+
+    void setPageWidget(DatabaseSettingsPage* page);
+    DatabaseSettingsPage* pageWidget();
+    void setDatabase(Database* db);
 
     void initializePage() override;
-    void initializePage(Database* db);
     bool validatePage() override;
 
-private slots:
-    void transformRoundsBenchmark();
-    void kdfChanged(int index);
-    void memoryChanged(int value);
-    void parallelismChanged(int value);
+public slots:
+    void toggleAdvancedSettings();
 
-private:
-    void setupAlgorithmComboBox();
-    void setupKdfComboBox();
-    void setupKdfParameterFields();
-
-    const QScopedPointer<Ui::DatabaseSettingsWidgetEncryption> m_ui;
+protected:
+    QPointer<DatabaseSettingsPage> m_pageWidget;
     QPointer<Database> m_db;
+
+    const QScopedPointer<Ui::NewDatabaseWizardPage> m_ui;
 };
 
-
-#endif //KEEPASSXC_DATABASESETTINGSWIDGETENCRYPTION_H
+#endif //KEEPASSXC_NEWDATABASEWIZARDPAGE_H

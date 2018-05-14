@@ -17,8 +17,8 @@
  */
 
 #include "DatabaseSettingsWidget.h"
-#include "DatabaseSettingsWidgetGeneral.h"
-#include "DatabaseSettingsWidgetEncryption.h"
+#include "DatabaseSettingsPageGeneral.h"
+#include "DatabaseSettingsPageEncryption.h"
 #include "ui_DatabaseSettingsWidget.h"
 
 #include "core/FilePath.h"
@@ -28,8 +28,8 @@
 DatabaseSettingsWidget::DatabaseSettingsWidget(QWidget* parent)
     : DialogyWidget(parent)
     , m_ui(new Ui::DatabaseSettingsWidget())
-    , m_generalPage(new DatabaseSettingsWidgetGeneral())
-    , m_encryptionPage(new DatabaseSettingsWidgetEncryption())
+    , m_generalPage(new DatabaseSettingsPageGeneral())
+    , m_encryptionPage(new DatabaseSettingsPageEncryption())
 {
     m_ui->setupUi(this);
 
@@ -51,14 +51,14 @@ DatabaseSettingsWidget::~DatabaseSettingsWidget()
 void DatabaseSettingsWidget::load(Database* db)
 {
     m_ui->categoryList->setCurrentCategory(0);
-    m_generalPage->initializePage(db);
-    m_encryptionPage->initializePage(db);
+    m_generalPage->load(db);
+    m_encryptionPage->load(db);
 }
 
 void DatabaseSettingsWidget::save()
 {
-    m_generalPage->validatePage();
-    m_encryptionPage->validatePage();
+    m_generalPage->save();
+    m_encryptionPage->save();
     emit editFinished(true);
 }
 

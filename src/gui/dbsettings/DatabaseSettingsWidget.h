@@ -22,8 +22,8 @@
 #include "gui/DialogyWidget.h"
 
 class Database;
-class DatabaseSettingsWidgetGeneral;
-class DatabaseSettingsWidgetEncryption;
+class DatabaseSettingsPageGeneral;
+class DatabaseSettingsPageEncryption;
 
 namespace Ui
 {
@@ -50,8 +50,8 @@ private slots:
 
 private:
     const QScopedPointer<Ui::DatabaseSettingsWidget> m_ui;
-    DatabaseSettingsWidgetGeneral* m_generalPage;
-    DatabaseSettingsWidgetEncryption* m_encryptionPage;
+    DatabaseSettingsPageGeneral* m_generalPage;
+    DatabaseSettingsPageEncryption* m_encryptionPage;
 };
 
 #endif // KEEPASSX_DATABASESETTINGSWIDGET_H

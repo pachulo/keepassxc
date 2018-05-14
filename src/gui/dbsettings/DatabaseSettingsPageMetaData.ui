@@ -1,16 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>NewDatabaseWizardPageGeneral</class>
- <widget class="QWizardPage" name="NewDatabaseWizardPageGeneral">
-  <property name="windowTitle">
-   <string>WizardPage</string>
-  </property>
-  <property name="title">
-   <string>General Database Information</string>
-  </property>
-  <property name="subTitle">
-   <string>Please fill in the name, and optional description and default username for your new database:</string>
-  </property>
+ <class>DatabaseSettingsPageMetaData</class>
+ <widget class="QWidget" name="DatabaseSettingsPageMetaData">
   <layout class="QFormLayout" name="formLayout">
    <item row="0" column="0">
     <widget class="QLabel" name="databaseNameLabel">

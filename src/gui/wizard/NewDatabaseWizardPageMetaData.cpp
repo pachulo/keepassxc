@@ -15,19 +15,19 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "NewDatabaseWizardPageEncryption.h"
-#include "../dbsettings/DatabaseSettingsPageEncryption.h"
+#include "NewDatabaseWizardPageMetaData.h"
+#include "../dbsettings/DatabaseSettingsPageMetaData.h"
 
-NewDatabaseWizardPageEncryption::NewDatabaseWizardPageEncryption(QWidget* parent)
+NewDatabaseWizardPageMetaData::NewDatabaseWizardPageMetaData(QWidget* parent)
     : NewDatabaseWizardPage(parent)
 {
-    setPageWidget(new DatabaseSettingsPageEncryption());
+    setPageWidget(new DatabaseSettingsPageMetaData());
 
-    setTitle(tr("Encryption Settings"));
-    setSubTitle(tr("Here you can adjust the database encryption settings. "
-                   "Don't worry, you can change them later in the database settings."));
+    setTitle(tr("General Database Information"));
+    setSubTitle(tr("Please fill in the name, and optional description "
+                   "and default username for your new database:"));
 }
 
-NewDatabaseWizardPageEncryption::~NewDatabaseWizardPageEncryption()
+NewDatabaseWizardPageMetaData::~NewDatabaseWizardPageMetaData()
 {
 }

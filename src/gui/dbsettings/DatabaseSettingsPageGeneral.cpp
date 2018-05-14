@@ -15,18 +15,17 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "DatabaseSettingsWidgetGeneral.h"
+#include "DatabaseSettingsPageGeneral.h"
 #include "core/Database.h"
 #include "core/Entry.h"
 #include "core/Group.h"
 #include "core/Metadata.h"
 
-#include "ui_DatabaseSettingsWidgetGeneral.h"
+#include "ui_DatabaseSettingsPageGeneral.h"
 
-DatabaseSettingsWidgetGeneral::DatabaseSettingsWidgetGeneral(Database* db, QWidget* parent)
-    : QWizardPage(parent)
-    , m_ui(new Ui::DatabaseSettingsWidgetGeneral())
-    , m_db(db)
+DatabaseSettingsPageGeneral::DatabaseSettingsPageGeneral(QWidget* parent)
+    : DatabaseSettingsPage(parent)
+    , m_ui(new Ui::DatabaseSettingsPageGeneral())
 {
     m_ui->setupUi(this);
 
@@ -40,14 +39,12 @@ DatabaseSettingsWidgetGeneral::DatabaseSettingsWidgetGeneral(Database* db, QWidg
             SLOT(setEnabled(bool)));
 }
 
-DatabaseSettingsWidgetGeneral::~DatabaseSettingsWidgetGeneral()
+DatabaseSettingsPageGeneral::~DatabaseSettingsPageGeneral()
 {
 }
 
-void DatabaseSettingsWidgetGeneral::initializePage()
+void DatabaseSettingsPageGeneral::initializePage()
 {
-    QWizardPage::initializePage();
-
     Metadata* meta = m_db->metadata();
 
     m_ui->dbNameEdit->setText(meta->name());
@@ -75,16 +72,14 @@ void DatabaseSettingsWidgetGeneral::initializePage()
     m_ui->dbNameEdit->setFocus();
 }
 
-void DatabaseSettingsWidgetGeneral::initializePage(Database* db)
+void DatabaseSettingsPageGeneral::uninitializePage()
 {
-    m_db = db;
-    initializePage();
 }
 
-bool DatabaseSettingsWidgetGeneral::validatePage()
+bool DatabaseSettingsPageGeneral::save()
 {
     m_db->setCompressionAlgo(m_ui->compressionCheckbox->isChecked() ? Database::CompressionGZip
-                                                                           : Database::CompressionNone);
+                                                                    : Database::CompressionNone);
     Metadata* meta = m_db->metadata();
 
     meta->setName(m_ui->dbNameEdit->text());
@@ -124,7 +119,7 @@ bool DatabaseSettingsWidgetGeneral::validatePage()
     return true;
 }
 
-void DatabaseSettingsWidgetGeneral::truncateHistories()
+void DatabaseSettingsPageGeneral::truncateHistories()
 {
     const QList<Entry*> allEntries = m_db->rootGroup()->entriesRecursive(false);
     for (Entry* entry : allEntries) {

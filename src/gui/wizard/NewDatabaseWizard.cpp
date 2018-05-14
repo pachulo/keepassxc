@@ -16,10 +16,11 @@
  */
 
 #include "NewDatabaseWizard.h"
-#include "NewDatabaseWizardPageGeneral.h"
+#include "NewDatabaseWizardPageMetaData.h"
 #include "NewDatabaseWizardPageEncryption.h"
 #include "../ChangeMasterKeyWidget.h"
 
+#include "core/Global.h"
 #include "core/Database.h"
 #include "core/Group.h"
 #include "core/FilePath.h"
@@ -29,22 +30,23 @@
 
 NewDatabaseWizard::NewDatabaseWizard(QWidget* parent)
     : QWizard(parent)
-    , m_generalPage(new NewDatabaseWizardPageGeneral())
-    , m_encryptionPage(new NewDatabaseWizardPageEncryption())
-    , m_changeKeyPage(new QWizardPage())
-    , m_changeKeyWidget(new ChangeMasterKeyWidget())
+    , m_pages()
 {
     setWizardStyle(QWizard::MacStyle);
     setOption(QWizard::WizardOption::HaveHelpButton, false);
 
-    addPage(m_generalPage);
-    addPage(m_encryptionPage);
+    m_pages << new NewDatabaseWizardPageMetaData()
+            << new NewDatabaseWizardPageEncryption();
 
-    m_changeKeyPage->setLayout(new QVBoxLayout());
-    m_changeKeyPage->layout()->addWidget(m_changeKeyWidget);
-    m_changeKeyPage->setTitle(tr("Set Master Key"));
-    m_changeKeyPage->setSubTitle(tr("As a last step, you need to set a strong master key to protect your database."));
-    addPage(m_changeKeyPage);
+    for (auto const& page: asConst(m_pages)) {
+        addPage(page);
+    }
+
+//    m_changeKeyPage->setLayout(new QVBoxLayout());
+//    m_changeKeyPage->layout()->addWidget(m_changeKeyWidget);
+//    m_changeKeyPage->setTitle(tr("Set Master Key"));
+//    m_changeKeyPage->setSubTitle(tr("As a last step, you need to set a strong master key to protect your database."));
+//    addPage(m_changeKeyPage);
 
     // TODO: change image
     setPixmap(QWizard::BackgroundPixmap, filePath()->applicationIcon().pixmap(512, 512));
@@ -58,10 +60,10 @@ bool NewDatabaseWizard::validateCurrentPage()
 {
     bool returnVal = QWizard::validateCurrentPage();
 
-    if (currentPage() == m_changeKeyPage && m_db) {
-        // TODO: set up and integrate change master key widget properly
-        m_db->setKey(m_changeKeyWidget->newMasterKey());
-    }
+//    if (currentPage() == m_changeKeyPage && m_db) {
+//        // TODO: set up and integrate change master key widget properly
+//        m_db->setKey(m_changeKeyWidget->newMasterKey());
+//    }
 
     return returnVal;
 }
@@ -79,12 +81,10 @@ void NewDatabaseWizard::initializePage(int id)
 
         CompositeKey emptyKey;
         m_db->setKey(emptyKey);
+        m_db->setCipher(KeePass2::CIPHER_AES);
         m_db->setKdf(KeePass2::uuidToKdf(KeePass2::KDF_ARGON2));
-
-        m_generalPage->initializePage(m_db.data());
-    } else if (id == startId() + 1) {
-        m_encryptionPage->initializePage(m_db.data());
-    } else {
-        QWizard::initializePage(id);
     }
+
+    m_pages[id]->setDatabase(m_db.data());
+    m_pages[id]->initializePage();
 }

@@ -15,19 +15,31 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "NewDatabaseWizardPageEncryption.h"
-#include "../dbsettings/DatabaseSettingsPageEncryption.h"
+#ifndef KEEPASSXC_DATABASESETTINGSPAGE_H
+#define KEEPASSXC_DATABASESETTINGSPAGE_H
 
-NewDatabaseWizardPageEncryption::NewDatabaseWizardPageEncryption(QWidget* parent)
-    : NewDatabaseWizardPage(parent)
+#include "gui/settings/SettingsPage.h"
+
+#include <QPointer>
+
+class Database;
+
+/**
+ * Pure-virtual base class for KeePassXC database settings pages.
+ */
+class DatabaseSettingsPage : public SettingsPage
 {
-    setPageWidget(new DatabaseSettingsPageEncryption());
+Q_OBJECT
 
-    setTitle(tr("Encryption Settings"));
-    setSubTitle(tr("Here you can adjust the database encryption settings. "
-                   "Don't worry, you can change them later in the database settings."));
-}
+public:
+    DatabaseSettingsPage(QWidget* parent = nullptr);
+    Q_DISABLE_COPY(DatabaseSettingsPage);
+    ~DatabaseSettingsPage() override;
 
-NewDatabaseWizardPageEncryption::~NewDatabaseWizardPageEncryption()
-{
-}
+    virtual void load(Database* db);
+
+protected:
+    QPointer<Database> m_db;
+};
+
+#endif //KEEPASSXC_DATABASESETTINGSPAGE_H

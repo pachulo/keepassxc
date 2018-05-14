@@ -15,24 +15,23 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "NewDatabaseWizardPageGeneral.h"
-#include "ui_NewDatabaseWizardPageGeneral.h"
+#include "DatabaseSettingsPageMetaData.h"
+#include "ui_DatabaseSettingsPageMetaData.h"
 #include "core/Database.h"
 #include "core/Metadata.h"
 
-NewDatabaseWizardPageGeneral::NewDatabaseWizardPageGeneral(Database* db, QWidget* parent)
-    : QWizardPage(parent)
-    , m_ui(new Ui::NewDatabaseWizardPageGeneral())
-    , m_db(db)
+DatabaseSettingsPageMetaData::DatabaseSettingsPageMetaData(QWidget* parent)
+    : DatabaseSettingsPage(parent)
+    , m_ui(new Ui::DatabaseSettingsPageMetaData())
 {
     m_ui->setupUi(this);
 }
 
-NewDatabaseWizardPageGeneral::~NewDatabaseWizardPageGeneral()
+DatabaseSettingsPageMetaData::~DatabaseSettingsPageMetaData()
 {
 }
 
-void NewDatabaseWizardPageGeneral::initializePage()
+void DatabaseSettingsPageMetaData::initializePage()
 {
     Metadata* meta = m_db->metadata();
     auto name = meta->name();
@@ -44,13 +43,11 @@ void NewDatabaseWizardPageGeneral::initializePage()
     m_ui->databaseName->selectAll();
 }
 
-void NewDatabaseWizardPageGeneral::initializePage(Database* db)
+void DatabaseSettingsPageMetaData::uninitializePage()
 {
-    m_db = db;
-    initializePage();
 }
 
-bool NewDatabaseWizardPageGeneral::validatePage()
+bool DatabaseSettingsPageMetaData::save()
 {
     Metadata* meta = m_db->metadata();
     meta->setName(m_ui->databaseName->text());
