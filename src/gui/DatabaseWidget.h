@@ -209,6 +209,7 @@ private slots:
 
 private:
     void setClipboardTextAndMinimize(const QString& text);
+    void setClipboardSecretTextAndMinimize(const QString& text);
     void setIconFromParent();
     void replaceDatabase(Database* db);
 
