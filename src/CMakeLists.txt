@@ -114,6 +114,7 @@ set(keepassx_SOURCES
     gui/EditWidgetIcons.cpp
     gui/EditWidgetProperties.cpp
     gui/FileDialog.cpp
+    gui/masterkey/KeyComponentWidget.cpp
     gui/Font.cpp
     gui/IconModels.cpp
     gui/KeePass1OpenWidget.cpp
@@ -150,6 +151,9 @@ set(keepassx_SOURCES
     gui/group/EditGroupWidget.cpp
     gui/group/GroupModel.cpp
     gui/group/GroupView.cpp
+    gui/masterkey/PasswordEditWidget.cpp
+    gui/masterkey/YubiKeyEditWidget.cpp
+    gui/masterkey/KeyFileEditWidget.cpp
     gui/settings/SettingsPage.cpp
     gui/dbsettings/DatabaseSettingsWidget.cpp
     gui/dbsettings/DatabaseSettingsPageGeneral.cpp

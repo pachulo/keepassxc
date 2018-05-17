@@ -2,7 +2,27 @@
 <ui version="4.0">
  <class>DatabaseSettingsPageMetaData</class>
  <widget class="QWidget" name="DatabaseSettingsPageMetaData">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>247</width>
+    <height>90</height>
+   </rect>
+  </property>
   <layout class="QFormLayout" name="formLayout">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
    <item row="0" column="0">
     <widget class="QLabel" name="databaseNameLabel">
      <property name="text">
