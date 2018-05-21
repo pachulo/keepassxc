@@ -145,14 +145,6 @@ QByteArray FileKey::rawKey() const
 }
 
 /**
- * @return cloned \link FileKey instance
- */
-FileKey* FileKey::clone() const
-{
-    return new FileKey(*this);
-}
-
-/**
  * Generate a new key file from random bytes.
  *
  * @param device output device

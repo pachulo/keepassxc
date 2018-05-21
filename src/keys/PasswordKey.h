@@ -29,7 +29,6 @@ public:
     explicit PasswordKey(const QString& password);
     QByteArray rawKey() const;
     void setPassword(const QString& password);
-    PasswordKey* clone() const;
 
 private:
     QByteArray m_key;

@@ -36,7 +36,7 @@ YubiKeyEditWidget::~YubiKeyEditWidget()
 {
 }
 
-bool YubiKeyEditWidget::addToCompositeKey(CompositeKey& key)
+bool YubiKeyEditWidget::addToCompositeKey(QSharedPointer<CompositeKey> key)
 {
     Q_ASSERT(m_compEditWidget);
     if (!m_isValid || !m_compEditWidget) {
@@ -58,7 +58,7 @@ bool YubiKeyEditWidget::addToCompositeKey(CompositeKey& key)
     bool blocking = static_cast<bool>(comboPayload & 1u);
     int slot = comboPayload >> 1u;
     auto crKey = QSharedPointer<YkChallengeResponseKey>(new YkChallengeResponseKey(slot, blocking));
-    key.addChallengeResponseKey(crKey);
+    key->addChallengeResponseKey(crKey);
 
     return true;
 }

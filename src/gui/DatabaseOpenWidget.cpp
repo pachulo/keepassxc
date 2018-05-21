@@ -184,7 +184,7 @@ void DatabaseOpenWidget::openDatabase()
         delete m_db;
     }
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-    m_db = reader.readDatabase(&file, *masterKey);
+    m_db = reader.readDatabase(&file, masterKey);
     QApplication::restoreOverrideCursor();
 
     if (m_db) {
@@ -204,21 +204,21 @@ QSharedPointer<CompositeKey> DatabaseOpenWidget::databaseKey()
     auto masterKey = QSharedPointer<CompositeKey>::create();
 
     if (m_ui->checkPassword->isChecked()) {
-        masterKey->addKey(PasswordKey(m_ui->editPassword->text()));
+        masterKey->addKey(QSharedPointer<PasswordKey>::create(m_ui->editPassword->text()));
     }
 
     QHash<QString, QVariant> lastKeyFiles = config()->get("LastKeyFiles").toHash();
     QHash<QString, QVariant> lastChallengeResponse = config()->get("LastChallengeResponse").toHash();
 
     if (m_ui->checkKeyFile->isChecked()) {
-        FileKey key;
+        auto key = QSharedPointer<FileKey>::create();
         QString keyFilename = m_ui->comboKeyFile->currentText();
         QString errorMsg;
-        if (!key.load(keyFilename, &errorMsg)) {
+        if (!key->load(keyFilename, &errorMsg)) {
             m_ui->messageWidget->showMessage(tr("Can't open key file:\n%1").arg(errorMsg), MessageWidget::Error);
-            return QSharedPointer<CompositeKey>();
+            return {};
         }
-        if (key.type() != FileKey::Hashed && !config()->get("Messages/NoLegacyKeyFileWarning").toBool()) {
+        if (key->type() != FileKey::Hashed && !config()->get("Messages/NoLegacyKeyFileWarning").toBool()) {
             QMessageBox legacyWarning;
             legacyWarning.setWindowTitle(tr("Legacy key file format"));
             legacyWarning.setText(tr("You are using a legacy key file format which may become\n"

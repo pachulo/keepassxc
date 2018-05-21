@@ -54,7 +54,7 @@ public:
      * @param key CompositeKey to add new key to
      * @return true if added successfully
      */
-    virtual bool addToCompositeKey(CompositeKey& key) = 0;
+    virtual bool addToCompositeKey(QSharedPointer<CompositeKey> key) = 0;
 
     /**
      * Validate key component data to check if key component

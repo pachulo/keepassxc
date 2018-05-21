@@ -1,6 +1,6 @@
 /*
+*  Copyright (C) 2018 KeePassXC Team <team@keepassxc.org>
 *  Copyright (C) 2010 Felix Geyer <debfx@fobos.de>
-*  Copyright (C) 2017 KeePassXC Team <team@keepassxc.org>
 *
 *  This program is free software: you can redistribute it and/or modify
 *  it under the terms of the GNU General Public License as published by
@@ -31,23 +31,22 @@ class CompositeKey : public Key
 {
 public:
     CompositeKey();
-    CompositeKey(const CompositeKey& key);
+    Q_DISABLE_COPY(CompositeKey);
     ~CompositeKey() override;
     void clear();
     bool isEmpty() const;
-    CompositeKey* clone() const override;
-    CompositeKey& operator=(const CompositeKey& key);
 
     QByteArray rawKey() const override;
     QByteArray rawKey(const QByteArray* transformSeed, bool* ok = nullptr) const;
     bool transform(const Kdf& kdf, QByteArray& result) const Q_REQUIRED_RESULT;
     bool challenge(const QByteArray& seed, QByteArray& result) const;
 
-    void addKey(const Key& key);
+    void addKey(QSharedPointer<Key> key);
+
     void addChallengeResponseKey(QSharedPointer<ChallengeResponseKey> key);
 
 private:
-    QList<Key*> m_keys;
+    QList<QSharedPointer<Key>> m_keys;
     QList<QSharedPointer<ChallengeResponseKey>> m_challengeResponseKeys;
 };
 

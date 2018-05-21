@@ -46,9 +46,9 @@ void ChangeMasterKeyWidget::clearForms()
 {
 }
 
-CompositeKey ChangeMasterKeyWidget::newMasterKey()
+QSharedPointer<CompositeKey> ChangeMasterKeyWidget::newMasterKey()
 {
-    return CompositeKey();
+    return QSharedPointer<CompositeKey>::create();
 }
 
 QLabel* ChangeMasterKeyWidget::headlineLabel()

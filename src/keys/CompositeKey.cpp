@@ -1,6 +1,6 @@
 /*
+*  Copyright (C) 2018 KeePassXC Team <team@keepassxc.org>
 *  Copyright (C) 2010 Felix Geyer <debfx@fobos.de>
-*  Copyright (C) 2017 KeePassXC Team <team@keepassxc.org>
 *
 *  This program is free software: you can redistribute it and/or modify
 *  it under the terms of the GNU General Public License as published by
@@ -29,11 +29,6 @@ CompositeKey::CompositeKey()
 {
 }
 
-CompositeKey::CompositeKey(const CompositeKey& key)
-{
-    *this = key;
-}
-
 CompositeKey::~CompositeKey()
 {
     clear();
@@ -41,7 +36,6 @@ CompositeKey::~CompositeKey()
 
 void CompositeKey::clear()
 {
-    qDeleteAll(m_keys);
     m_keys.clear();
     m_challengeResponseKeys.clear();
 }
@@ -49,30 +43,6 @@ void CompositeKey::clear()
 bool CompositeKey::isEmpty() const
 {
     return m_keys.isEmpty() && m_challengeResponseKeys.isEmpty();
-}
-
-CompositeKey* CompositeKey::clone() const
-{
-    return new CompositeKey(*this);
-}
-
-CompositeKey& CompositeKey::operator=(const CompositeKey& key)
-{
-    // handle self assignment as that would break when calling clear()
-    if (this == &key) {
-        return *this;
-    }
-
-    clear();
-
-    for (const Key* subKey : asConst(key.m_keys)) {
-        addKey(*subKey);
-    }
-    for (const auto subKey : asConst(key.m_challengeResponseKeys)) {
-        addChallengeResponseKey(subKey);
-    }
-
-    return *this;
 }
 
 /**
@@ -104,7 +74,7 @@ QByteArray CompositeKey::rawKey(const QByteArray* transformSeed, bool* ok) const
 {
     CryptoHash cryptoHash(CryptoHash::Sha256);
 
-    for (const Key* key : m_keys) {
+    for (auto const& key : m_keys) {
         cryptoHash.addData(key->rawKey());
     }
 
@@ -174,9 +144,9 @@ bool CompositeKey::challenge(const QByteArray& seed, QByteArray& result) const
     return true;
 }
 
-void CompositeKey::addKey(const Key& key)
+void CompositeKey::addKey(QSharedPointer<Key> key)
 {
-    m_keys.append(key.clone());
+    m_keys.append(key);
 }
 
 void CompositeKey::addChallengeResponseKey(QSharedPointer<ChallengeResponseKey> key)

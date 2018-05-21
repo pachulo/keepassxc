@@ -38,7 +38,7 @@ public:
     explicit ChangeMasterKeyWidget(QWidget* parent = nullptr);
     ~ChangeMasterKeyWidget();
     void clearForms();
-    CompositeKey newMasterKey();
+    QSharedPointer<CompositeKey> newMasterKey();
     QLabel* headlineLabel();
 
 public slots:

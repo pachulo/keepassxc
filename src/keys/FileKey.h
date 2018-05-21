@@ -40,7 +40,6 @@ public:
     bool load(QIODevice* device);
     bool load(const QString& fileName, QString* errorMsg = nullptr);
     QByteArray rawKey() const override;
-    FileKey* clone() const override;
     Type type() const;
     static void create(QIODevice* device, int size = 128);
     static bool create(const QString& fileName, QString* errorMsg = nullptr, int size = 128);

@@ -32,9 +32,9 @@ PasswordEditWidget::~PasswordEditWidget()
 {
 }
 
-bool PasswordEditWidget::addToCompositeKey(CompositeKey& key)
+bool PasswordEditWidget::addToCompositeKey(QSharedPointer<CompositeKey> key)
 {
-    key.addKey(PasswordKey(m_compUi->enterPasswordEdit->text()));
+    key->addKey(QSharedPointer<PasswordKey>::create(m_compUi->enterPasswordEdit->text()));
     return true;
 }
 

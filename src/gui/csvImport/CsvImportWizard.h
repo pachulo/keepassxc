@@ -38,7 +38,7 @@ public:
     explicit CsvImportWizard(QWidget* parent = nullptr);
     ~CsvImportWizard();
     void load(const QString& filename, Database* database);
-    void keyFinished(bool accepted, CompositeKey key);
+    void keyFinished(bool accepted, QSharedPointer<const CompositeKey> key);
 
 signals:
     void importFinished(bool accepted);

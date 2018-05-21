@@ -34,15 +34,15 @@ KeyFileEditWidget::~KeyFileEditWidget()
 {
 }
 
-bool KeyFileEditWidget::addToCompositeKey(CompositeKey& key)
+bool KeyFileEditWidget::addToCompositeKey(QSharedPointer<CompositeKey> key)
 {
-    FileKey fileKey;
+    auto fileKey = QSharedPointer<FileKey>::create();
     QString fileKeyName = m_compUi->keyFileCombo->currentText();
-    if (!fileKey.load(fileKeyName, nullptr)) {
+    if (!fileKey->load(fileKeyName, nullptr)) {
         return false;
     }
 
-    if (fileKey.type() != FileKey::Hashed) {
+    if (fileKey->type() != FileKey::Hashed) {
         QMessageBox::warning(KEEPASSXC_MAIN_WINDOW,
                              tr("Legacy key file format"),
                              tr("You are using a legacy key file format which may become\n"
@@ -51,7 +51,7 @@ bool KeyFileEditWidget::addToCompositeKey(CompositeKey& key)
                              QMessageBox::Ok);
     }
 
-    key.addKey(fileKey);
+    key->addKey(fileKey);
     return true;
 }
 

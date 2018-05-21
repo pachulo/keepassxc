@@ -37,8 +37,3 @@ void PasswordKey::setPassword(const QString& password)
 {
     m_key = CryptoHash::hash(password.toUtf8(), CryptoHash::Sha256);
 }
-
-PasswordKey* PasswordKey::clone() const
-{
-    return new PasswordKey(*this);
-}

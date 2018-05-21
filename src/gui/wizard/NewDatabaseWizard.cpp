@@ -18,7 +18,7 @@
 #include "NewDatabaseWizard.h"
 #include "NewDatabaseWizardPageMetaData.h"
 #include "NewDatabaseWizardPageEncryption.h"
-#include "../ChangeMasterKeyWidget.h"
+#include "gui/ChangeMasterKeyWidget.h"
 
 #include "core/Global.h"
 #include "core/Database.h"
@@ -79,7 +79,7 @@ void NewDatabaseWizard::initializePage(int id)
         m_db.reset(new Database());
         m_db->rootGroup()->setName(tr("Root", "Root group"));
 
-        CompositeKey emptyKey;
+        auto emptyKey = QSharedPointer<CompositeKey>::create();
         m_db->setKey(emptyKey);
         m_db->setCipher(KeePass2::CIPHER_AES);
         m_db->setKdf(KeePass2::uuidToKdf(KeePass2::KDF_ARGON2));

@@ -1,4 +1,5 @@
 /*
+*  Copyright (C) 2018 KeePassXC Team <team@keepassxc.org>
 *  Copyright (C) 2010 Felix Geyer <debfx@fobos.de>
 *
 *  This program is free software: you can redistribute it and/or modify
@@ -23,11 +24,10 @@
 class Key
 {
 public:
-    virtual ~Key()
-    {
-    }
+    Key() = default;
+    Q_DISABLE_COPY(Key);
+    virtual ~Key() = default;
     virtual QByteArray rawKey() const = 0;
-    virtual Key* clone() const = 0;
 };
 
 #endif // KEEPASSX_KEY_H

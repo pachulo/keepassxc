@@ -42,7 +42,7 @@ void CsvImportWizard::load(const QString& filename, Database* database)
     m_parse->load(filename, database);
 }
 
-void CsvImportWizard::keyFinished(bool accepted, CompositeKey key)
+void CsvImportWizard::keyFinished(bool accepted, QSharedPointer<const CompositeKey> key)
 {
     if (!accepted) {
         emit importFinished(false);

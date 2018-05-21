@@ -35,7 +35,7 @@ public:
     Q_DISABLE_COPY(KeyFileEditWidget);
     ~KeyFileEditWidget();
 
-    bool addToCompositeKey(CompositeKey& key) override;
+    bool addToCompositeKey(QSharedPointer<CompositeKey> key) override;
     bool validate(QString& errorMessage) const override;
 
 protected:
