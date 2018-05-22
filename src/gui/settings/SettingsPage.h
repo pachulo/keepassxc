@@ -35,6 +35,14 @@ public:
     ~SettingsPage() override;
 
     /**
+     * @return true if widget has an advanced mode
+     */
+    virtual bool hasAdvancedMode() const = 0;
+    virtual void setAdvancedMode(bool advanced);
+    virtual bool advancedMode() const;
+
+public slots:
+    /**
      * Initialize settings page.
      */
     virtual void initializePage() = 0;
@@ -52,13 +60,12 @@ public:
     virtual bool save() = 0;
 
     /**
-     * @return true if widget has an advanced mode
+     * Discard settings.
      */
-    virtual bool hasAdvancedMode() const = 0;
-    virtual void setAdvancedMode(bool advanced);
-    virtual bool advancedMode() const;
+    virtual void discard() {};
 
 signals:
+    void editFinished(bool saved);
     void advancedModeChanged(bool advanced);
 
 private:

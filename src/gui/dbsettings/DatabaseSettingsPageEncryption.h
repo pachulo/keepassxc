@@ -38,11 +38,13 @@ public:
     Q_DISABLE_COPY(DatabaseSettingsPageEncryption);
     ~DatabaseSettingsPageEncryption() override;
 
+    inline bool hasAdvancedMode() const override { return true; }
+    void setAdvancedMode(bool advanced) override;
+
+public slots:
     void initializePage() override;
     void uninitializePage() override;
     bool save() override;
-    inline bool hasAdvancedMode() const override { return true; }
-    void setAdvancedMode(bool advanced) override;
 
 private slots:
     void transformRoundsBenchmark();

@@ -18,7 +18,7 @@
 #include "NewDatabaseWizard.h"
 #include "NewDatabaseWizardPageMetaData.h"
 #include "NewDatabaseWizardPageEncryption.h"
-#include "gui/ChangeMasterKeyWidget.h"
+#include "gui/dbsettings/ChangeMasterKeyWidget.h"
 
 #include "core/Global.h"
 #include "core/Database.h"

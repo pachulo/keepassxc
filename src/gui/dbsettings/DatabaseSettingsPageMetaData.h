@@ -38,10 +38,12 @@ public:
     Q_DISABLE_COPY(DatabaseSettingsPageMetaData);
     ~DatabaseSettingsPageMetaData() override;
 
+    inline bool hasAdvancedMode() const override { return false; }
+
+public slots:
     void initializePage() override;
     void uninitializePage() override;
     bool save() override;
-    inline bool hasAdvancedMode() const override { return false; }
 
 private:
     const QScopedPointer<Ui::DatabaseSettingsPageMetaData> m_ui;

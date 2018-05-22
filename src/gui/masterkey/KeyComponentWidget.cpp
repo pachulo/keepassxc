@@ -40,10 +40,12 @@ KeyComponentWidget::KeyComponentWidget(const QString& name, QWidget* parent)
     connect(this, SIGNAL(componentRemovalRequested()), SLOT(doRemove()));
     connect(this, SIGNAL(componentAddChanged(bool)), SLOT(updateAddStatus(bool)));
     connect(this, SIGNAL(currentChanged(int)), SLOT(reset()));
+    connect(this, SIGNAL(currentChanged(int)), SLOT(updateSize()));
 
     blockSignals(true);
     setComponentName(name);
     setCurrentIndex(Page::AddNew);
+    updateSize();
     blockSignals(false);
 }
 
@@ -152,4 +154,16 @@ void KeyComponentWidget::reset()
         delete item;
     }
     m_ui->componentWidgetLayout->addWidget(componentEditWidget());
+}
+
+void KeyComponentWidget::updateSize()
+{
+    for (int i = 0; i < count(); ++i) {
+        if (currentIndex() == i) {
+            widget(i)->setSizePolicy(widget(i)->sizePolicy().horizontalPolicy(), QSizePolicy::Preferred);
+        } else {
+            widget(i)->setSizePolicy(widget(i)->sizePolicy().horizontalPolicy(), QSizePolicy::Ignored);
+        }
+    }
+    adjustSize();
 }

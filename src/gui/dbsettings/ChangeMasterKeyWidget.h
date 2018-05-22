@@ -19,10 +19,9 @@
 #ifndef KEEPASSX_CHANGEMASTERKEYWIDGET_H
 #define KEEPASSX_CHANGEMASTERKEYWIDGET_H
 
-#include <QScopedPointer>
+#include "DatabaseSettingsPage.h"
 
-#include "gui/DialogyWidget.h"
-#include "keys/CompositeKey.h"
+#include <QScopedPointer>
 
 class QLabel;
 namespace Ui
@@ -30,32 +29,38 @@ namespace Ui
     class ChangeMasterKeyWidget;
 }
 
-class ChangeMasterKeyWidget : public DialogyWidget
+class KeyComponentWidget;
+class Key;
+class CompositeKey;
+class ChallengeResponseKey;
+
+class ChangeMasterKeyWidget : public DatabaseSettingsPage
 {
     Q_OBJECT
 
 public:
     explicit ChangeMasterKeyWidget(QWidget* parent = nullptr);
-    ~ChangeMasterKeyWidget();
-    void clearForms();
-    QSharedPointer<CompositeKey> newMasterKey();
-    QLabel* headlineLabel();
+    Q_DISABLE_COPY(ChangeMasterKeyWidget);
+    ~ChangeMasterKeyWidget() override;
+
+    void load(Database* db) override;
+    bool hasAdvancedMode() const override;
 
 public slots:
-    void setCancelEnabled(bool enabled);
-
-signals:
-    void editFinished(bool accepted);
-
-private slots:
-    void generateKey();
-    void reject();
+    void initializePage() override;
+    void uninitializePage() override;
+    bool save() override;
+    void discard() override;
 
 private:
-    const QScopedPointer<Ui::ChangeMasterKeyWidget> m_ui;
-    CompositeKey m_key;
+    bool addToCompositeKey(KeyComponentWidget* widget,
+                           QSharedPointer<CompositeKey>& newKey,
+                           QSharedPointer<Key>& oldKey);
+    bool addToCompositeKey(KeyComponentWidget* widget,
+                           QSharedPointer<CompositeKey>& newKey,
+                           QSharedPointer<ChallengeResponseKey>& oldKey);
 
-    Q_DISABLE_COPY(ChangeMasterKeyWidget)
+    const QScopedPointer<Ui::ChangeMasterKeyWidget> m_ui;
 };
 
 #endif // KEEPASSX_CHANGEMASTERKEYWIDGET_H

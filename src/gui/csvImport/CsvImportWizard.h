@@ -25,7 +25,7 @@
 #include <QStackedWidget>
 
 #include "core/Database.h"
-#include "gui/ChangeMasterKeyWidget.h"
+#include "gui/dbsettings/ChangeMasterKeyWidget.h"
 #include "gui/DialogyWidget.h"
 
 class CsvImportWidget;

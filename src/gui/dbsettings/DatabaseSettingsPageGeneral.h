@@ -38,10 +38,12 @@ public:
     Q_DISABLE_COPY(DatabaseSettingsPageGeneral);
     ~DatabaseSettingsPageGeneral() override;
 
+    inline bool hasAdvancedMode() const override { return true; }
+
+public slots:
     void initializePage() override;
     void uninitializePage() override;
     bool save() override;
-    inline bool hasAdvancedMode() const override { return true; }
 
 private:
     void truncateHistories();

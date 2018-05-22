@@ -26,6 +26,8 @@ namespace Ui
 class YubiKeyEditWidget;
 }
 
+class YkChallengeResponseKey;
+
 class YubiKeyEditWidget : public KeyComponentWidget
 {
     Q_OBJECT
@@ -47,9 +49,11 @@ private slots:
     void pollYubikey();
 
 private:
+    bool createCrKey(QSharedPointer<YkChallengeResponseKey>& key, bool testChallenge = true) const;
+
     const QScopedPointer<Ui::YubiKeyEditWidget> m_compUi;
     QPointer<QWidget> m_compEditWidget;
-    bool m_isValid = false;
+    bool m_isDetected = false;
 };
 
 #endif //KEEPASSXC_YUBIKEYEDITWIDGET_H

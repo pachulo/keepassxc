@@ -61,7 +61,7 @@ bool KeyFileEditWidget::validate(QString& errorMessage) const
     QString fileKeyError;
     QString fileKeyName = m_compUi->keyFileCombo->currentText();
     if (!fileKey.load(fileKeyName, &fileKeyError)) {
-        errorMessage = tr("Failed to load key file '%1':\n%2").arg(fileKeyName, fileKeyError);
+        errorMessage = tr("Error loading the key file '%1'\nMessage: %2").arg(fileKeyName, fileKeyError);
         return false;
     }
     return true;

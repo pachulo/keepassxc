@@ -99,7 +99,6 @@ set(keepassx_SOURCES
     gui/AboutDialog.cpp
     gui/Application.cpp
     gui/CategoryListWidget.cpp
-    gui/ChangeMasterKeyWidget.cpp
     gui/Clipboard.cpp
     gui/CloneDialog.cpp
     gui/DatabaseOpenWidget.cpp
@@ -155,6 +154,7 @@ set(keepassx_SOURCES
     gui/masterkey/YubiKeyEditWidget.cpp
     gui/masterkey/KeyFileEditWidget.cpp
     gui/settings/SettingsPage.cpp
+    gui/dbsettings/ChangeMasterKeyWidget.cpp
     gui/dbsettings/DatabaseSettingsWidget.cpp
     gui/dbsettings/DatabaseSettingsPageGeneral.cpp
     gui/dbsettings/DatabaseSettingsPageMetaData.cpp

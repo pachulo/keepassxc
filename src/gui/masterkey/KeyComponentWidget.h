@@ -99,6 +99,7 @@ private slots:
     void doRemove();
     void cancelEdit();
     void reset();
+    void updateSize();
 
 private:
     bool m_isComponentAdded = false;

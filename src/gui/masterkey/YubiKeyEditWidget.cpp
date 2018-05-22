@@ -38,37 +38,24 @@ YubiKeyEditWidget::~YubiKeyEditWidget()
 
 bool YubiKeyEditWidget::addToCompositeKey(QSharedPointer<CompositeKey> key)
 {
-    Q_ASSERT(m_compEditWidget);
-    if (!m_isValid || !m_compEditWidget) {
+    QSharedPointer<YkChallengeResponseKey> keyPtr;
+    if (!createCrKey(keyPtr, false)) {
         return false;
     }
-
-    int selectionIndex = m_compUi->comboChallengeResponse->currentIndex();
-    int comboPayload = m_compUi->comboChallengeResponse->itemData(selectionIndex).toInt();
-
-    if (0 == comboPayload) {
-        MessageBox::critical(KEEPASSXC_MAIN_WINDOW,
-                             tr("Error communicating with YubiKey"),
-                             tr("Error communicating with YubiKey, please ensure it's plugged in."),
-                             QMessageBox::Button::Ok);
-        return false;
-    }
-
-    // read blocking mode from LSB and slot index number from second LSB
-    bool blocking = static_cast<bool>(comboPayload & 1u);
-    int slot = comboPayload >> 1u;
-    auto crKey = QSharedPointer<YkChallengeResponseKey>(new YkChallengeResponseKey(slot, blocking));
-    key->addChallengeResponseKey(crKey);
+    key->addChallengeResponseKey(keyPtr);
 
     return true;
 }
 
 bool YubiKeyEditWidget::validate(QString& errorMessage) const
 {
-    if (!m_isValid) {
-        errorMessage = tr("No YubiKey detected, please ensure its plugged in.");
+    QSharedPointer<YkChallengeResponseKey> keyPtr;
+    if (!createCrKey(keyPtr)) {
+        errorMessage = tr("No YubiKey detected, please ensure it's plugged in.");
+        return false;
     }
-    return m_isValid;
+
+    return true;
 }
 
 QWidget* YubiKeyEditWidget::componentEditWidget()
@@ -122,7 +109,7 @@ void YubiKeyEditWidget::yubikeyDetected(int slot, bool blocking)
     m_compUi->comboChallengeResponse->setEnabled(true);
     m_compUi->buttonRedetectYubikey->setEnabled(true);
     m_compUi->yubikeyProgress->setVisible(false);
-    m_isValid = true;
+    m_isDetected = true;
 #endif
 }
 
@@ -137,6 +124,29 @@ void YubiKeyEditWidget::noYubikeyFound()
     m_compUi->comboChallengeResponse->addItem(tr("No YubiKey inserted."));
     m_compUi->buttonRedetectYubikey->setEnabled(true);
     m_compUi->yubikeyProgress->setVisible(false);
-    m_isValid = false;
+    m_isDetected = false;
 #endif
+}
+
+bool YubiKeyEditWidget::createCrKey(QSharedPointer<YkChallengeResponseKey>& key, bool testChallenge) const
+{
+    Q_ASSERT(m_compEditWidget);
+    if (!m_isDetected || !m_compEditWidget) {
+        return false;
+    }
+
+    int selectionIndex = m_compUi->comboChallengeResponse->currentIndex();
+    int comboPayload = m_compUi->comboChallengeResponse->itemData(selectionIndex).toInt();
+
+    if (0 == comboPayload) {
+        return false;
+    }
+
+    auto blocking = static_cast<bool>(comboPayload & 1u);
+    int slot = comboPayload >> 1u;
+    key.reset(new YkChallengeResponseKey(slot, blocking));
+    if (testChallenge) {
+        return key->challenge(QByteArray("0000"));
+    }
+    return true;
 }
