@@ -24,6 +24,13 @@
 #include "crypto/CryptoHash.h"
 #include "crypto/Random.h"
 
+Uuid FileKey::UUID(QByteArray::fromHex("a584cbc4c9b4437e81bb362ca9709273"));
+
+FileKey::FileKey()
+    : Key(UUID)
+{
+}
+
 /**
  * Read key file from device while trying to detect its file format.
  *

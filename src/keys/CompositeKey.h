@@ -30,8 +30,9 @@
 class CompositeKey : public Key
 {
 public:
+    static Uuid UUID;
+
     CompositeKey();
-    Q_DISABLE_COPY(CompositeKey);
     ~CompositeKey() override;
     void clear();
     bool isEmpty() const;
@@ -42,8 +43,10 @@ public:
     bool challenge(const QByteArray& seed, QByteArray& result) const;
 
     void addKey(QSharedPointer<Key> key);
+    const QList<QSharedPointer<Key>>& keys() const;
 
-    void addChallengeResponseKey(QSharedPointer<ChallengeResponseKey> key);
+    void addChallengeResponseKey(QSharedPointer<ChallengeResponseKey> key);\
+    const QList<QSharedPointer<ChallengeResponseKey>>& challengeResponseKeys() const;
 
 private:
     QList<QSharedPointer<Key>> m_keys;

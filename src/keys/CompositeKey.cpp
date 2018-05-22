@@ -25,7 +25,10 @@
 #include "crypto/CryptoHash.h"
 #include "crypto/kdf/AesKdf.h"
 
+Uuid CompositeKey::UUID(QByteArray::fromHex("76a7ae25a5424add98497c06be945b94"));
+
 CompositeKey::CompositeKey()
+    : Key(UUID)
 {
 }
 
@@ -144,12 +147,41 @@ bool CompositeKey::challenge(const QByteArray& seed, QByteArray& result) const
     return true;
 }
 
+/**
+ * Add a \link Key to this composite key.
+ * Keys will be hashed in the order they were initially added.
+ *
+ * @param key the key
+ */
 void CompositeKey::addKey(QSharedPointer<Key> key)
 {
     m_keys.append(key);
 }
 
+/**
+ * @return list of Keys which are part of this CompositeKey
+ */
+const QList<QSharedPointer<Key>>& CompositeKey::keys() const
+{
+    return m_keys;
+}
+
+/**
+ * Add a \link ChallengeResponseKey to this composite key.
+ * ChallengeResponseKeys will be hashed in the order they were initially added,
+ * but will always come after normal \link Keys.
+ *
+ * @param key the key
+ */
 void CompositeKey::addChallengeResponseKey(QSharedPointer<ChallengeResponseKey> key)
 {
     m_challengeResponseKeys.append(key);
+}
+
+/**
+ * @return list of ChallengeResponseKeys which are part of this CompositeKey
+ */
+const QList<QSharedPointer<ChallengeResponseKey>>& CompositeKey::challengeResponseKeys() const
+{
+    return m_challengeResponseKeys;
 }

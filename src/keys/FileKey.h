@@ -28,6 +28,8 @@ class QIODevice;
 class FileKey : public Key
 {
 public:
+    static Uuid UUID;
+
     enum Type
     {
         None,
@@ -37,6 +39,7 @@ public:
         FixedBinaryHex
     };
 
+    FileKey();
     bool load(QIODevice* device);
     bool load(const QString& fileName, QString* errorMsg = nullptr);
     QByteArray rawKey() const override;

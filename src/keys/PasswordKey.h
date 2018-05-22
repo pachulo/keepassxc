@@ -25,9 +25,11 @@
 class PasswordKey : public Key
 {
 public:
+    static Uuid UUID;
+
     PasswordKey();
     explicit PasswordKey(const QString& password);
-    QByteArray rawKey() const;
+    QByteArray rawKey() const override;
     void setPassword(const QString& password);
 
 private:
