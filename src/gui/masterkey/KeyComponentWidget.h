@@ -18,7 +18,7 @@
 #ifndef KEEPASSXC_KEYCOMPONENTWIDGET_H
 #define KEEPASSXC_KEYCOMPONENTWIDGET_H
 
-#include <QStackedWidget>
+#include <QWidget>
 #include <QScopedPointer>
 
 namespace Ui
@@ -26,8 +26,9 @@ namespace Ui
 class KeyComponentWidget;
 }
 class CompositeKey;
+class QStackedWidget;
 
-class KeyComponentWidget : public QStackedWidget
+class KeyComponentWidget : public QWidget
 {
     Q_OBJECT
     Q_PROPERTY(QString componentName READ m_componentName READ componentName WRITE setComponentName NOTIFY nameChanged)

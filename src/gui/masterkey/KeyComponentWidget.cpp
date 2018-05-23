@@ -17,6 +17,7 @@
 
 #include "KeyComponentWidget.h"
 #include "ui_KeyComponentWidget.h"
+#include <QStackedWidget>
 
 KeyComponentWidget::KeyComponentWidget(QWidget* parent)
     : KeyComponentWidget({}, parent)
@@ -24,27 +25,28 @@ KeyComponentWidget::KeyComponentWidget(QWidget* parent)
 }
 
 KeyComponentWidget::KeyComponentWidget(const QString& name, QWidget* parent)
-    : QStackedWidget(parent)
+    : QWidget(parent)
     , m_ui(new Ui::KeyComponentWidget())
 {
     m_ui->setupUi(this);
 
-    connect(m_ui->addButton, SIGNAL(clicked(bool)), this, SIGNAL(componentAddRequested()));
-    connect(m_ui->changeButton, SIGNAL(clicked(bool)), this, SIGNAL(componentEditRequested()));
-    connect(m_ui->removeButton, SIGNAL(clicked(bool)), this, SIGNAL(componentRemovalRequested()));
-    connect(m_ui->cancelButton, SIGNAL(clicked(bool)), this, SLOT(cancelEdit()));
+    connect(m_ui->addButton, SIGNAL(clicked(bool)), SIGNAL(componentAddRequested()));
+    connect(m_ui->changeButton, SIGNAL(clicked(bool)), SIGNAL(componentEditRequested()));
+    connect(m_ui->removeButton, SIGNAL(clicked(bool)), SIGNAL(componentRemovalRequested()));
+    connect(m_ui->cancelButton, SIGNAL(clicked(bool)), SLOT(cancelEdit()));
+
+    connect(m_ui->stackedWidget, SIGNAL(currentChanged(int)), SLOT(reset()));
+    connect(m_ui->stackedWidget, SIGNAL(currentChanged(int)), SLOT(updateSize()));
 
     connect(this, SIGNAL(nameChanged(const QString&)), SLOT(updateComponentName(const QString&)));
     connect(this, SIGNAL(componentAddRequested()), SLOT(doAdd()));
     connect(this, SIGNAL(componentEditRequested()), SLOT(doEdit()));
     connect(this, SIGNAL(componentRemovalRequested()), SLOT(doRemove()));
     connect(this, SIGNAL(componentAddChanged(bool)), SLOT(updateAddStatus(bool)));
-    connect(this, SIGNAL(currentChanged(int)), SLOT(reset()));
-    connect(this, SIGNAL(currentChanged(int)), SLOT(updateSize()));
 
     blockSignals(true);
     setComponentName(name);
-    setCurrentIndex(Page::AddNew);
+    m_ui->stackedWidget->setCurrentIndex(Page::AddNew);
     updateSize();
     blockSignals(false);
 }
@@ -91,13 +93,13 @@ bool KeyComponentWidget::componentAdded() const
 
 void KeyComponentWidget::changeVisiblePage(KeyComponentWidget::Page page)
 {
-    m_previousPage = static_cast<Page>(currentIndex());
-    setCurrentIndex(page);
+    m_previousPage = static_cast<Page>(m_ui->stackedWidget->currentIndex());
+    m_ui->stackedWidget->setCurrentIndex(page);
 }
 
 KeyComponentWidget::Page KeyComponentWidget::visiblePage() const
 {
-    return static_cast<Page>(currentIndex());
+    return static_cast<Page>(m_ui->stackedWidget->currentIndex());
 }
 
 void KeyComponentWidget::updateComponentName(const QString& name)
@@ -113,9 +115,9 @@ void KeyComponentWidget::updateComponentName(const QString& name)
 void KeyComponentWidget::updateAddStatus(bool added)
 {
     if (added) {
-        setCurrentIndex(Page::LeaveOrRemove);
+        m_ui->stackedWidget->setCurrentIndex(Page::LeaveOrRemove);
     } else {
-        setCurrentIndex(Page::AddNew);
+        m_ui->stackedWidget->setCurrentIndex(Page::AddNew);
     }
 }
 
@@ -136,13 +138,13 @@ void KeyComponentWidget::doRemove()
 
 void KeyComponentWidget::cancelEdit()
 {
-    setCurrentIndex(m_previousPage);
+    m_ui->stackedWidget->setCurrentIndex(m_previousPage);
     emit editCanceled();
 }
 
 void KeyComponentWidget::reset()
 {
-    if (static_cast<Page>(currentIndex()) != Page::Edit) {
+    if (static_cast<Page>(m_ui->stackedWidget->currentIndex()) != Page::Edit) {
         return;
     }
 
@@ -158,12 +160,14 @@ void KeyComponentWidget::reset()
 
 void KeyComponentWidget::updateSize()
 {
-    for (int i = 0; i < count(); ++i) {
-        if (currentIndex() == i) {
-            widget(i)->setSizePolicy(widget(i)->sizePolicy().horizontalPolicy(), QSizePolicy::Preferred);
+    for (int i = 0; i < m_ui->stackedWidget->count(); ++i) {
+        if (m_ui->stackedWidget->currentIndex() == i) {
+            m_ui->stackedWidget->widget(i)->setSizePolicy(
+                m_ui->stackedWidget->widget(i)->sizePolicy().horizontalPolicy(), QSizePolicy::Preferred);
         } else {
-            widget(i)->setSizePolicy(widget(i)->sizePolicy().horizontalPolicy(), QSizePolicy::Ignored);
+            m_ui->stackedWidget->widget(i)->setSizePolicy(
+                m_ui->stackedWidget->widget(i)->sizePolicy().horizontalPolicy(), QSizePolicy::Ignored);
         }
     }
-    adjustSize();
+    m_ui->stackedWidget->adjustSize();
 }
