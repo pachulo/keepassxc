@@ -42,6 +42,10 @@ protected:
     QWidget* componentEditWidget() override;
     void initComponentEditWidget(QWidget* widget) override;
 
+private slots:
+    void showPasswordGenerator();
+    void setPassword(const QString& password);
+
 private:
     const QScopedPointer<Ui::PasswordEditWidget> m_compUi;
     QPointer<QWidget> m_compEditWidget;

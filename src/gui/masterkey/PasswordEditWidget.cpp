@@ -18,8 +18,11 @@
 #include "PasswordEditWidget.h"
 #include "ui_PasswordEditWidget.h"
 #include "core/FilePath.h"
+#include "gui/PasswordGeneratorWidget.h"
 #include "keys/PasswordKey.h"
 #include "keys/CompositeKey.h"
+
+#include <QDialog>
 
 PasswordEditWidget::PasswordEditWidget(QWidget* parent)
     : KeyComponentWidget(parent)
@@ -43,9 +46,11 @@ QWidget* PasswordEditWidget::componentEditWidget()
     m_compEditWidget = new QWidget();
     m_compUi->setupUi(m_compEditWidget);
     m_compUi->togglePasswordButton->setIcon(filePath()->onOffIcon("actions", "password-show"));
+    m_compUi->passwordGeneratorButton->setIcon(filePath()->icon("actions", "password-generator", false));
     m_compUi->repeatPasswordEdit->enableVerifyMode(m_compUi->enterPasswordEdit);
 
     connect(m_compUi->togglePasswordButton, SIGNAL(toggled(bool)), m_compUi->enterPasswordEdit, SLOT(setShowPassword(bool)));
+    connect(m_compUi->passwordGeneratorButton, SIGNAL(clicked(bool)), SLOT(showPasswordGenerator()));
 
     return m_compEditWidget;
 }
@@ -70,4 +75,30 @@ bool PasswordEditWidget::validate(QString& errorMessage) const
     }
 
     return true;
+}
+
+void PasswordEditWidget::showPasswordGenerator()
+{
+    QDialog pwDialog;
+    pwDialog.setWindowTitle(tr("Generate master password"));
+
+    auto layout = new QVBoxLayout();
+    pwDialog.setLayout(layout);
+
+    auto pwGenerator = new PasswordGeneratorWidget(&pwDialog);
+    layout->addWidget(pwGenerator);
+
+    pwGenerator->setStandaloneMode(false);
+    connect(pwGenerator, SIGNAL(appliedPassword(const QString&)), SLOT(setPassword(const QString&)));
+    connect(pwGenerator, SIGNAL(dialogTerminated()), &pwDialog, SLOT(close()));
+
+    pwDialog.exec();
+}
+
+void PasswordEditWidget::setPassword(const QString& password)
+{
+    Q_ASSERT(m_compEditWidget);
+
+    m_compUi->enterPasswordEdit->setText(password);
+    m_compUi->repeatPasswordEdit->setText(password);
 }
