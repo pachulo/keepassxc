@@ -28,6 +28,8 @@ KeyFileEditWidget::KeyFileEditWidget(QWidget* parent)
     , m_compUi(new Ui::KeyFileEditWidget())
 {
     setComponentName(tr("Key File"));
+    setComponentDescription(tr("<p>You can generate a key file containing random bytes and use "
+                               "it to unlock your database.<p>The key file must be kept secret!</p>"));
 }
 
 KeyFileEditWidget::~KeyFileEditWidget()

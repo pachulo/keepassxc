@@ -118,6 +118,17 @@ bool ChangeMasterKeyWidget::save()
         return false;
     }
 
+    if (m_ui->passwordEditWidget->visiblePage() == KeyComponentWidget::AddNew) {
+        auto answer = MessageBox::warning(this, tr("No password set"),
+                                          tr("WARNING! You have not set a password. Using a database without "
+                                             "a password is strongly discouraged!\n\n"
+                                             "Are you sure you want to continue without a password?"),
+                                          QMessageBox::Yes | QMessageBox::Cancel, QMessageBox::Cancel);
+        if (answer != QMessageBox::Yes) {
+            return false;
+        }
+    }
+
     m_db->setKey(newKey);
 
     emit editFinished(true);

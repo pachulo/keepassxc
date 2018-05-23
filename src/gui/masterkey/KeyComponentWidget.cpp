@@ -18,6 +18,7 @@
 #include "KeyComponentWidget.h"
 #include "ui_KeyComponentWidget.h"
 #include <QStackedWidget>
+#include <QTimer>
 
 KeyComponentWidget::KeyComponentWidget(QWidget* parent)
     : KeyComponentWidget({}, parent)
@@ -36,9 +37,9 @@ KeyComponentWidget::KeyComponentWidget(const QString& name, QWidget* parent)
     connect(m_ui->cancelButton, SIGNAL(clicked(bool)), SLOT(cancelEdit()));
 
     connect(m_ui->stackedWidget, SIGNAL(currentChanged(int)), SLOT(reset()));
-    connect(m_ui->stackedWidget, SIGNAL(currentChanged(int)), SLOT(updateSize()));
 
     connect(this, SIGNAL(nameChanged(const QString&)), SLOT(updateComponentName(const QString&)));
+    connect(this, SIGNAL(descriptionChanged(const QString&)), SLOT(updateComponentDescription(const QString&)));
     connect(this, SIGNAL(componentAddRequested()), SLOT(doAdd()));
     connect(this, SIGNAL(componentEditRequested()), SLOT(doEdit()));
     connect(this, SIGNAL(componentRemovalRequested()), SLOT(doRemove()));
@@ -76,6 +77,21 @@ QString KeyComponentWidget::componentName() const
     return m_componentName;
 }
 
+void KeyComponentWidget::setComponentDescription(const QString& description)
+{
+    if (description == m_componentDescription) {
+        return;
+    }
+
+    m_componentDescription = description;
+    emit descriptionChanged(description);
+}
+
+QString KeyComponentWidget::componentDescription() const
+{
+    return m_componentDescription;
+}
+
 void KeyComponentWidget::setComponentAdded(bool added)
 {
     if (m_isComponentAdded == added) {
@@ -104,12 +120,21 @@ KeyComponentWidget::Page KeyComponentWidget::visiblePage() const
 
 void KeyComponentWidget::updateComponentName(const QString& name)
 {
-    m_ui->addLabel->setText(tr("%1 unset", "Key component unset").arg(name));
+    m_ui->groupBox->setTitle(name);
     m_ui->addButton->setText(tr("Add %1", "Add a key component").arg(name));
-    m_ui->editLabel->setText(tr("Edit %1:", "Edit a key component").arg(name));
-    m_ui->componentSetLabel->setText(tr("%1 set", "Key component is set").arg(name));
     m_ui->changeButton->setText(tr("Change %1", "Change a key component").arg(name));
     m_ui->removeButton->setText(tr("Remove %1", "Remove a key component").arg(name));
+    m_ui->changeOrRemoveLabel->setText(tr("%1 set, click to change or remove", "Change or remove a key component").arg(name));
+}
+
+void KeyComponentWidget::updateComponentDescription(const QString& description)
+{
+    m_ui->componentDescription->setText(description);
+}
+
+QSize KeyComponentWidget::minimumSizeHint() const
+{
+    return sizeHint();
 }
 
 void KeyComponentWidget::updateAddStatus(bool added)
@@ -144,21 +169,21 @@ void KeyComponentWidget::cancelEdit()
 
 void KeyComponentWidget::reset()
 {
-    if (static_cast<Page>(m_ui->stackedWidget->currentIndex()) != Page::Edit) {
-        return;
-    }
-
-    if (!m_ui->componentWidgetLayout->isEmpty()) {
-        auto* item = m_ui->componentWidgetLayout->takeAt(0);
-        if (item->widget()) {
-            delete item->widget();
+    if (static_cast<Page>(m_ui->stackedWidget->currentIndex()) == Page::Edit) {
+        if (!m_ui->componentWidgetLayout->isEmpty()) {
+            auto* item = m_ui->componentWidgetLayout->takeAt(0);
+            if (item->widget()) {
+                delete item->widget();
+            }
+            delete item;
         }
-        delete item;
+
+        QWidget* widget = componentEditWidget();
+        m_ui->componentWidgetLayout->addWidget(widget);
+        initComponentEditWidget(widget);
     }
 
-    QWidget* widget = componentEditWidget();
-    m_ui->componentWidgetLayout->addWidget(widget);
-    initComponentEditWidget(widget);
+    QTimer::singleShot(0, this, SLOT(updateSize()));
 }
 
 void KeyComponentWidget::updateSize()
@@ -172,5 +197,6 @@ void KeyComponentWidget::updateSize()
                 m_ui->stackedWidget->widget(i)->sizePolicy().horizontalPolicy(), QSizePolicy::Ignored);
         }
     }
+
     m_ui->stackedWidget->adjustSize();
 }

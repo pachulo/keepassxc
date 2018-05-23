@@ -29,6 +29,9 @@ PasswordEditWidget::PasswordEditWidget(QWidget* parent)
     , m_compUi(new Ui::PasswordEditWidget())
 {
     setComponentName(tr("Password"));
+    setComponentDescription(tr("<p>A password is the primary method for securing your database. "
+                               "Good passwords are long and unique.</p><p>You can use the password "
+                               "generator to let KeePassXC generate a secure password for you.</p>"));
 }
 
 PasswordEditWidget::~PasswordEditWidget()

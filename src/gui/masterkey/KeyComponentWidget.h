@@ -31,8 +31,12 @@ class QStackedWidget;
 class KeyComponentWidget : public QWidget
 {
     Q_OBJECT
-    Q_PROPERTY(QString componentName READ m_componentName READ componentName WRITE setComponentName NOTIFY nameChanged)
-    Q_PROPERTY(bool componentAdded READ m_isComponentAdded READ componentAdded WRITE setComponentAdded NOTIFY componentAddChanged)
+    Q_PROPERTY(QString componentName READ m_componentName READ componentName
+                   WRITE setComponentName NOTIFY nameChanged)
+    Q_PROPERTY(QString componentDescription READ m_componentDescription READ componentDescription
+                   WRITE setComponentDescription NOTIFY descriptionChanged)
+    Q_PROPERTY(bool componentAdded READ m_isComponentAdded READ componentAdded
+                   WRITE setComponentAdded NOTIFY componentAddChanged)
 
 public:
     enum Page
@@ -68,10 +72,13 @@ public:
 
     void setComponentName(const QString& name);
     QString componentName() const;
+    void setComponentDescription(const QString& name);
+    QString componentDescription() const;
     void setComponentAdded(bool added);
     bool componentAdded() const;
     void changeVisiblePage(Page page);
     Page visiblePage() const;
+    QSize minimumSizeHint() const override;
 
 protected:
     /**
@@ -94,6 +101,7 @@ protected:
 
 signals:
     void nameChanged(const QString& newName);
+    void descriptionChanged(const QString& newDescription);
     void componentAddChanged(bool added);
     void componentAddRequested();
     void componentEditRequested();
@@ -102,6 +110,7 @@ signals:
 
 private slots:
     void updateComponentName(const QString& name);
+    void updateComponentDescription(const QString& decription);
     void updateAddStatus(bool added);
     void doAdd();
     void doEdit();
@@ -114,6 +123,7 @@ private:
     bool m_isComponentAdded = false;
     Page m_previousPage = Page::AddNew;
     QString m_componentName;
+    QString m_componentDescription;
 
     const QScopedPointer<Ui::KeyComponentWidget> m_ui;
 };
