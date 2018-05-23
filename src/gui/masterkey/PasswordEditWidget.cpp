@@ -50,6 +50,13 @@ QWidget* PasswordEditWidget::componentEditWidget()
     return m_compEditWidget;
 }
 
+void PasswordEditWidget::initComponentEditWidget(QWidget* widget)
+{
+    Q_UNUSED(widget);
+    Q_ASSERT(m_compEditWidget);
+    m_compUi->enterPasswordEdit->setFocus();
+}
+
 bool PasswordEditWidget::validate(QString& errorMessage) const
 {
     if (m_compUi->enterPasswordEdit->text().isEmpty()) {

@@ -78,6 +78,13 @@ QWidget* KeyFileEditWidget::componentEditWidget()
     return m_compEditWidget;
 }
 
+void KeyFileEditWidget::initComponentEditWidget(QWidget* widget)
+{
+    Q_UNUSED(widget);
+    Q_ASSERT(m_compEditWidget);
+    m_compUi->keyFileCombo->setFocus();
+}
+
 void KeyFileEditWidget::createKeyFile()
 {
     Q_ASSERT(m_compEditWidget);

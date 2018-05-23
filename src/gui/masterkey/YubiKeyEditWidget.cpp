@@ -80,6 +80,13 @@ QWidget* YubiKeyEditWidget::componentEditWidget()
     return m_compEditWidget;
 }
 
+void YubiKeyEditWidget::initComponentEditWidget(QWidget* widget)
+{
+    Q_UNUSED(widget);
+    Q_ASSERT(m_compEditWidget);
+    m_compUi->comboChallengeResponse->setFocus();
+}
+
 void YubiKeyEditWidget::pollYubikey()
 {
 #ifdef WITH_XC_YUBIKEY

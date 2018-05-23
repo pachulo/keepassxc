@@ -84,6 +84,14 @@ protected:
      */
     virtual QWidget* componentEditWidget() = 0;
 
+    /**
+     * Initialize the key component widget created by \link componentEditWidget().
+     * This method is called every time the component edit widget is shown.
+     *
+     * @param widget pointer to the widget
+     */
+    virtual void initComponentEditWidget(QWidget* widget) = 0;
+
 signals:
     void nameChanged(const QString& newName);
     void componentAddChanged(bool added);

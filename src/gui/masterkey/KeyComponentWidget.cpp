@@ -155,7 +155,10 @@ void KeyComponentWidget::reset()
         }
         delete item;
     }
-    m_ui->componentWidgetLayout->addWidget(componentEditWidget());
+
+    QWidget* widget = componentEditWidget();
+    m_ui->componentWidgetLayout->addWidget(widget);
+    initComponentEditWidget(widget);
 }
 
 void KeyComponentWidget::updateSize()

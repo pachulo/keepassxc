@@ -81,6 +81,10 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>comboChallengeResponse</tabstop>
+  <tabstop>buttonRedetectYubikey</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
