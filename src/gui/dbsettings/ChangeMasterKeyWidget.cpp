@@ -111,6 +111,13 @@ bool ChangeMasterKeyWidget::save()
         return false;
     }
 
+    if (newKey->keys().isEmpty() && newKey->challengeResponseKeys().isEmpty()) {
+        MessageBox::critical(this, tr("No encryption key added"),
+                             tr("You must add at least one encryption key to secure your database!"),
+                             QMessageBox::Ok, QMessageBox::Ok);
+        return false;
+    }
+
     m_db->setKey(newKey);
 
     emit editFinished(true);
