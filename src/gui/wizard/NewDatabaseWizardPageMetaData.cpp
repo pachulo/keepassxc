@@ -16,12 +16,12 @@
  */
 
 #include "NewDatabaseWizardPageMetaData.h"
-#include "../dbsettings/DatabaseSettingsPageMetaData.h"
+#include "gui/dbsettings/DatabaseSettingsWidgetMetaData.h"
 
 NewDatabaseWizardPageMetaData::NewDatabaseWizardPageMetaData(QWidget* parent)
     : NewDatabaseWizardPage(parent)
 {
-    setPageWidget(new DatabaseSettingsPageMetaData());
+    setPageWidget(new DatabaseSettingWidgetMetaData());
 
     setTitle(tr("General Database Information"));
     setSubTitle(tr("Please fill in the name, and optional description "

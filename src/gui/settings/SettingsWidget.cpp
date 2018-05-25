@@ -15,14 +15,14 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "SettingsPage.h"
+#include "SettingsWidget.h"
 
-SettingsPage::SettingsPage(QWidget* parent)
+SettingsWidget::SettingsWidget(QWidget* parent)
     : QWidget(parent)
 {
 }
 
-SettingsPage::~SettingsPage()
+SettingsWidget::~SettingsWidget()
 {
 }
 
@@ -36,7 +36,7 @@ SettingsPage::~SettingsPage()
  *
  * @param advanced whether advanced mode is enabled
  */
-void SettingsPage::setAdvancedMode(bool advanced)
+void SettingsWidget::setAdvancedMode(bool advanced)
 {
     if (hasAdvancedMode() && advanced != advancedMode()) {
         m_advancedMode = advanced;
@@ -47,7 +47,7 @@ void SettingsPage::setAdvancedMode(bool advanced)
 /**
  * @return true if advanced mode is on (default: false)
  */
-bool SettingsPage::advancedMode() const
+bool SettingsWidget::advancedMode() const
 {
     return m_advancedMode;
 }

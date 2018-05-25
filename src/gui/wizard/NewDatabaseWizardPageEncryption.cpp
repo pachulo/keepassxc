@@ -16,12 +16,12 @@
  */
 
 #include "NewDatabaseWizardPageEncryption.h"
-#include "../dbsettings/DatabaseSettingsPageEncryption.h"
+#include "gui/dbsettings/DatabaseSettingsWidgetEncryption.h"
 
 NewDatabaseWizardPageEncryption::NewDatabaseWizardPageEncryption(QWidget* parent)
     : NewDatabaseWizardPage(parent)
 {
-    setPageWidget(new DatabaseSettingsPageEncryption());
+    setPageWidget(new DatabaseSettingsWidgetEncryption());
 
     setTitle(tr("Encryption Settings"));
     setSubTitle(tr("Here you can adjust the database encryption settings. "

@@ -23,7 +23,7 @@
 #include <QWizardPage>
 
 class Database;
-class DatabaseSettingsPage;
+class DatabaseSettingsWidget;
 namespace Ui
 {
 class NewDatabaseWizardPage;
@@ -41,8 +41,8 @@ public:
     Q_DISABLE_COPY(NewDatabaseWizardPage);
     ~NewDatabaseWizardPage();
 
-    void setPageWidget(DatabaseSettingsPage* page);
-    DatabaseSettingsPage* pageWidget();
+    void setPageWidget(DatabaseSettingsWidget* page);
+    DatabaseSettingsWidget* pageWidget();
     void setDatabase(Database* db);
 
     void initializePage() override;
@@ -52,7 +52,7 @@ public slots:
     void toggleAdvancedSettings();
 
 protected:
-    QPointer<DatabaseSettingsPage> m_pageWidget;
+    QPointer<DatabaseSettingsWidget> m_pageWidget;
     QPointer<Database> m_db;
 
     const QScopedPointer<Ui::NewDatabaseWizardPage> m_ui;

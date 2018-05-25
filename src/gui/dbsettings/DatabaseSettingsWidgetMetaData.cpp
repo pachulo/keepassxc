@@ -15,23 +15,23 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "DatabaseSettingsPageMetaData.h"
-#include "ui_DatabaseSettingsPageMetaData.h"
+#include "DatabaseSettingsWidgetMetaData.h"
+#include "ui_DatabaseSettingsWidgetMetaData.h"
 #include "core/Database.h"
 #include "core/Metadata.h"
 
-DatabaseSettingsPageMetaData::DatabaseSettingsPageMetaData(QWidget* parent)
-    : DatabaseSettingsPage(parent)
-    , m_ui(new Ui::DatabaseSettingsPageMetaData())
+DatabaseSettingWidgetMetaData::DatabaseSettingWidgetMetaData(QWidget* parent)
+    : DatabaseSettingsWidget(parent)
+    , m_ui(new Ui::DatabaseSettingsWidgetMetaData())
 {
     m_ui->setupUi(this);
 }
 
-DatabaseSettingsPageMetaData::~DatabaseSettingsPageMetaData()
+DatabaseSettingWidgetMetaData::~DatabaseSettingWidgetMetaData()
 {
 }
 
-void DatabaseSettingsPageMetaData::initializePage()
+void DatabaseSettingWidgetMetaData::initialize()
 {
     Metadata* meta = m_db->metadata();
     auto name = meta->name();
@@ -43,11 +43,11 @@ void DatabaseSettingsPageMetaData::initializePage()
     m_ui->databaseName->selectAll();
 }
 
-void DatabaseSettingsPageMetaData::uninitializePage()
+void DatabaseSettingWidgetMetaData::uninitialize()
 {
 }
 
-bool DatabaseSettingsPageMetaData::save()
+bool DatabaseSettingWidgetMetaData::save()
 {
     Metadata* meta = m_db->metadata();
     meta->setName(m_ui->databaseName->text());

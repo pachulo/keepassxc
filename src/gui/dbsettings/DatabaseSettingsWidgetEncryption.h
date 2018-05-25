@@ -18,7 +18,7 @@
 #ifndef KEEPASSXC_DATABASESETTINGSWIDGETENCRYPTION_H
 #define KEEPASSXC_DATABASESETTINGSWIDGETENCRYPTION_H
 
-#include "DatabaseSettingsPage.h"
+#include "DatabaseSettingsWidget.h"
 
 #include <QPointer>
 #include <QScopedPointer>
@@ -26,24 +26,24 @@
 class Database;
 namespace Ui
 {
-class DatabaseSettingsPageEncryption;
+class DatabaseSettingsWidgetEncryption;
 }
 
-class DatabaseSettingsPageEncryption: public DatabaseSettingsPage
+class DatabaseSettingsWidgetEncryption: public DatabaseSettingsWidget
 {
-Q_OBJECT
+    Q_OBJECT
 
 public:
-    explicit DatabaseSettingsPageEncryption(QWidget* parent = nullptr);
-    Q_DISABLE_COPY(DatabaseSettingsPageEncryption);
-    ~DatabaseSettingsPageEncryption() override;
+    explicit DatabaseSettingsWidgetEncryption(QWidget* parent = nullptr);
+    Q_DISABLE_COPY(DatabaseSettingsWidgetEncryption);
+    ~DatabaseSettingsWidgetEncryption() override;
 
     inline bool hasAdvancedMode() const override { return true; }
     void setAdvancedMode(bool advanced) override;
 
 public slots:
-    void initializePage() override;
-    void uninitializePage() override;
+    void initialize() override;
+    void uninitialize() override;
     bool save() override;
 
 private slots:
@@ -59,8 +59,7 @@ private:
     void setupKdfComboBox();
     void loadKdfParameters();
 
-    const QScopedPointer<Ui::DatabaseSettingsPageEncryption> m_ui;
+    const QScopedPointer<Ui::DatabaseSettingsWidgetEncryption> m_ui;
 };
-
 
 #endif //KEEPASSXC_DATABASESETTINGSWIDGETENCRYPTION_H

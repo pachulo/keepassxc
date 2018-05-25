@@ -18,7 +18,7 @@
 #include "NewDatabaseWizardPage.h"
 #include "ui_NewDatabaseWizardPage.h"
 #include "core/Database.h"
-#include "../dbsettings/DatabaseSettingsPage.h"
+#include "gui/dbsettings/DatabaseSettingsWidget.h"
 
 #include <QVBoxLayout>
 
@@ -41,7 +41,7 @@ NewDatabaseWizardPage::~NewDatabaseWizardPage()
  *
  * @param page database settings page widget
  */
-void NewDatabaseWizardPage::setPageWidget(DatabaseSettingsPage* page)
+void NewDatabaseWizardPage::setPageWidget(DatabaseSettingsWidget* page)
 {
     m_pageWidget = page;
     if (!m_ui->pageContentLayout->isEmpty()) {
@@ -54,7 +54,7 @@ void NewDatabaseWizardPage::setPageWidget(DatabaseSettingsPage* page)
 /**
  * @return database settings widget of this page widget.
  */
-DatabaseSettingsPage* NewDatabaseWizardPage::pageWidget()
+DatabaseSettingsWidget* NewDatabaseWizardPage::pageWidget()
 {
     return m_pageWidget;
 }
@@ -88,7 +88,7 @@ bool NewDatabaseWizardPage::validatePage()
     }
 
     bool returnVal = m_pageWidget->save();
-    m_pageWidget->uninitializePage();
+    m_pageWidget->uninitialize();
     return returnVal;
 }
 

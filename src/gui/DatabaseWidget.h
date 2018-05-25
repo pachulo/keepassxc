@@ -31,7 +31,7 @@
 
 class ChangeMasterKeyWidget;
 class DatabaseOpenWidget;
-class DatabaseSettingsWidget;
+class DatabaseSettingsDialog;
 class Database;
 class EditEntryWidget;
 class EditGroupWidget;
@@ -218,7 +218,7 @@ private:
     EditGroupWidget* m_editGroupWidget;
     ChangeMasterKeyWidget* m_changeMasterKeyWidget;
     CsvImportWizard* m_csvImportWizard;
-    DatabaseSettingsWidget* m_databaseSettingsWidget;
+    DatabaseSettingsDialog* m_databaseSettingsWidget;
     DatabaseOpenWidget* m_databaseOpenWidget;
     DatabaseOpenWidget* m_databaseOpenMergeWidget;
     KeePass1OpenWidget* m_keepass1OpenWidget;

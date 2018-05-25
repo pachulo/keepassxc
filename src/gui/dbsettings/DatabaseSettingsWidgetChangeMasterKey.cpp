@@ -15,9 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "ChangeMasterKeyWidget.h"
-#include "ui_ChangeMasterKeyWidget.h"
-#include "config-keepassx.h"
+#include "DatabaseSettingsWidgetChangeMasterKey.h"
 #include "core/Database.h"
 #include "keys/PasswordKey.h"
 #include "keys/FileKey.h"
@@ -27,57 +25,65 @@
 #include "gui/masterkey/KeyFileEditWidget.h"
 #include "gui/masterkey/YubiKeyEditWidget.h"
 
-ChangeMasterKeyWidget::ChangeMasterKeyWidget(QWidget* parent)
+#include <QVBoxLayout>
+
+DatabaseSettingsWidgetChangeMasterKey::DatabaseSettingsWidgetChangeMasterKey(QWidget* parent)
     : DatabaseSettingsWidget(parent)
-    , m_ui(new Ui::ChangeMasterKeyWidget())
+    , m_passwordEditWidget(new PasswordEditWidget(this))
+    , m_keyFileEditWidget(new KeyFileEditWidget(this))
+#ifdef WITH_XC_YUBIKEY
+    , m_yubiKeyEditWidget(new YubiKeyEditWidget(this))
+#endif
 {
-    m_ui->setupUi(this);
-
-    connect(m_ui->buttonBox, SIGNAL(accepted()), SLOT(save()));
-    connect(m_ui->buttonBox, SIGNAL(rejected()), SLOT(discard()));
-
-#ifndef WITH_XC_YUBIKEY
-    m_ui->yubiKeyEditWidget->setVisible(false);
+    setLayout(new QVBoxLayout());
+    layout()->addWidget(m_passwordEditWidget);
+    layout()->addWidget(m_keyFileEditWidget);
+#ifdef WITH_XC_YUBIKEY
+    layout()->addWidget(m_yubiKeyEditWidget);
 #endif
 }
 
-ChangeMasterKeyWidget::~ChangeMasterKeyWidget()
+DatabaseSettingsWidgetChangeMasterKey::~DatabaseSettingsWidgetChangeMasterKey()
 {
 }
 
-void ChangeMasterKeyWidget::load(Database* db)
+void DatabaseSettingsWidgetChangeMasterKey::load(Database* db)
 {
     DatabaseSettingsWidget::load(db);
 
     for (const auto& key: m_db->key()->keys()) {
         if (key->uuid() == PasswordKey::UUID) {
-            m_ui->passwordEditWidget->setComponentAdded(true);
+            m_passwordEditWidget->setComponentAdded(true);
         } else if (key->uuid() == FileKey::UUID) {
-            m_ui->keyFileEditWidget->setComponentAdded(true);
+            m_keyFileEditWidget->setComponentAdded(true);
         }
     }
 
+#ifdef WITH_XC_YUBIKEY
     for (const auto& key: m_db->key()->challengeResponseKeys()) {
         if (key->uuid() == YkChallengeResponseKey::UUID) {
-            m_ui->yubiKeyEditWidget->setComponentAdded(true);
+            m_yubiKeyEditWidget->setComponentAdded(true);
         }
     }
+#endif
 }
 
-void ChangeMasterKeyWidget::initialize()
+void DatabaseSettingsWidgetChangeMasterKey::initialize()
 {
     blockSignals(true);
-    m_ui->passwordEditWidget->setComponentAdded(false);
-    m_ui->keyFileEditWidget->setComponentAdded(false);
-    m_ui->yubiKeyEditWidget->setComponentAdded(false);
+    m_passwordEditWidget->setComponentAdded(false);
+    m_keyFileEditWidget->setComponentAdded(false);
+#ifdef WITH_XC_YUBIKEY
+    m_yubiKeyEditWidget->setComponentAdded(false);
+#endif
     blockSignals(false);
 }
 
-void ChangeMasterKeyWidget::uninitialize()
+void DatabaseSettingsWidgetChangeMasterKey::uninitialize()
 {
 }
 
-bool ChangeMasterKeyWidget::save()
+bool DatabaseSettingsWidgetChangeMasterKey::save()
 {
     auto newKey = QSharedPointer<CompositeKey>::create();
 
@@ -99,17 +105,19 @@ bool ChangeMasterKeyWidget::save()
         }
     }
 
-    if (!addToCompositeKey(m_ui->passwordEditWidget, newKey, passwordKey)) {
+    if (!addToCompositeKey(m_passwordEditWidget, newKey, passwordKey)) {
         return false;
     }
 
-    if (!addToCompositeKey(m_ui->keyFileEditWidget, newKey, fileKey)) {
+    if (!addToCompositeKey(m_keyFileEditWidget, newKey, fileKey)) {
         return false;
     }
 
-    if (!addToCompositeKey(m_ui->yubiKeyEditWidget, newKey, ykCrKey)) {
+#ifdef WITH_XC_YUBIKEY
+    if (!addToCompositeKey(m_yubiKeyEditWidget, newKey, ykCrKey)) {
         return false;
     }
+#endif
 
     if (newKey->keys().isEmpty() && newKey->challengeResponseKeys().isEmpty()) {
         MessageBox::critical(this, tr("No encryption key added"),
@@ -118,7 +126,7 @@ bool ChangeMasterKeyWidget::save()
         return false;
     }
 
-    if (m_ui->passwordEditWidget->visiblePage() == KeyComponentWidget::AddNew) {
+    if (m_passwordEditWidget->visiblePage() == KeyComponentWidget::AddNew) {
         auto answer = MessageBox::warning(this, tr("No password set"),
                                           tr("WARNING! You have not set a password. Using a database without "
                                              "a password is strongly discouraged!\n\n"
@@ -135,17 +143,12 @@ bool ChangeMasterKeyWidget::save()
     return true;
 }
 
-void ChangeMasterKeyWidget::discard()
+void DatabaseSettingsWidgetChangeMasterKey::discard()
 {
     emit editFinished(false);
 }
 
-bool ChangeMasterKeyWidget::hasAdvancedMode() const
-{
-    return false;
-}
-
-bool ChangeMasterKeyWidget::addToCompositeKey(KeyComponentWidget* widget, QSharedPointer<CompositeKey>& newKey,
+bool DatabaseSettingsWidgetChangeMasterKey::addToCompositeKey(KeyComponentWidget* widget, QSharedPointer<CompositeKey>& newKey,
                                               QSharedPointer<Key>& oldKey)
 {
     if (widget->visiblePage() == KeyComponentWidget::Edit) {
@@ -161,7 +164,7 @@ bool ChangeMasterKeyWidget::addToCompositeKey(KeyComponentWidget* widget, QShare
     return true;
 }
 
-bool ChangeMasterKeyWidget::addToCompositeKey(KeyComponentWidget* widget, QSharedPointer<CompositeKey>& newKey,
+bool DatabaseSettingsWidgetChangeMasterKey::addToCompositeKey(KeyComponentWidget* widget, QSharedPointer<CompositeKey>& newKey,
                                               QSharedPointer<ChallengeResponseKey>& oldKey)
 {
     if (widget->visiblePage() == KeyComponentWidget::Edit) {

@@ -43,7 +43,7 @@
 #include "gui/CloneDialog.h"
 #include "gui/DatabaseOpenWidget.h"
 #include "gui/dbsettings/ChangeMasterKeyWidget.h"
-#include "gui/dbsettings/DatabaseSettingsWidget.h"
+#include "gui/dbsettings/DatabaseSettingsDialog.h"
 #include "gui/DetailsWidget.h"
 #include "gui/KeePass1OpenWidget.h"
 #include "gui/MessageBox.h"
@@ -153,7 +153,7 @@ DatabaseWidget::DatabaseWidget(Database* db, QWidget* parent)
     m_changeMasterKeyWidget->setObjectName("changeMasterKeyWidget");;
     m_csvImportWizard = new CsvImportWizard();
     m_csvImportWizard->setObjectName("csvImportWizard");
-    m_databaseSettingsWidget = new DatabaseSettingsWidget();
+    m_databaseSettingsWidget = new DatabaseSettingsDialog();
     m_databaseSettingsWidget->setObjectName("databaseSettingsWidget");
     m_databaseOpenWidget = new DatabaseOpenWidget();
     m_databaseOpenWidget->setObjectName("databaseOpenWidget");

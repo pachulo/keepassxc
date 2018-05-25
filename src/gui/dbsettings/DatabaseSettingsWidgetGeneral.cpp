@@ -15,17 +15,16 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "DatabaseSettingsPageGeneral.h"
+#include "DatabaseSettingsWidgetGeneral.h"
+#include "ui_DatabaseSettingsWidgetGeneral.h"
 #include "core/Database.h"
 #include "core/Entry.h"
 #include "core/Group.h"
 #include "core/Metadata.h"
 
-#include "ui_DatabaseSettingsPageGeneral.h"
-
-DatabaseSettingsPageGeneral::DatabaseSettingsPageGeneral(QWidget* parent)
-    : DatabaseSettingsPage(parent)
-    , m_ui(new Ui::DatabaseSettingsPageGeneral())
+DatabaseSettingsWidgetGeneral::DatabaseSettingsWidgetGeneral(QWidget* parent)
+    : DatabaseSettingsWidget(parent)
+    , m_ui(new Ui::DatabaseSettingsWidgetGeneral())
 {
     m_ui->setupUi(this);
 
@@ -39,11 +38,11 @@ DatabaseSettingsPageGeneral::DatabaseSettingsPageGeneral(QWidget* parent)
             SLOT(setEnabled(bool)));
 }
 
-DatabaseSettingsPageGeneral::~DatabaseSettingsPageGeneral()
+DatabaseSettingsWidgetGeneral::~DatabaseSettingsWidgetGeneral()
 {
 }
 
-void DatabaseSettingsPageGeneral::initializePage()
+void DatabaseSettingsWidgetGeneral::initialize()
 {
     Metadata* meta = m_db->metadata();
 
@@ -72,11 +71,11 @@ void DatabaseSettingsPageGeneral::initializePage()
     m_ui->dbNameEdit->setFocus();
 }
 
-void DatabaseSettingsPageGeneral::uninitializePage()
+void DatabaseSettingsWidgetGeneral::uninitialize()
 {
 }
 
-bool DatabaseSettingsPageGeneral::save()
+bool DatabaseSettingsWidgetGeneral::save()
 {
     m_db->setCompressionAlgo(m_ui->compressionCheckbox->isChecked() ? Database::CompressionGZip
                                                                     : Database::CompressionNone);
@@ -119,7 +118,7 @@ bool DatabaseSettingsPageGeneral::save()
     return true;
 }
 
-void DatabaseSettingsPageGeneral::truncateHistories()
+void DatabaseSettingsWidgetGeneral::truncateHistories()
 {
     const QList<Entry*> allEntries = m_db->rootGroup()->entriesRecursive(false);
     for (Entry* entry : allEntries) {

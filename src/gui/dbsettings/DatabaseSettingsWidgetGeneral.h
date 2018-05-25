@@ -15,10 +15,10 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KEEPASSXC_DATABASESETTINGSWIDGEMETADATA_H
-#define KEEPASSXC_DATABASESETTINGSWIDGEMETADATA_H
+#ifndef KEEPASSXC_DATABASESETTINGSWIDGETGENERAL_H
+#define KEEPASSXC_DATABASESETTINGSWIDGETGENERAL_H
 
-#include "DatabaseSettingsPage.h"
+#include "DatabaseSettingsWidget.h"
 
 #include <QPointer>
 #include <QScopedPointer>
@@ -26,27 +26,29 @@
 class Database;
 namespace Ui
 {
-class DatabaseSettingsPageMetaData;
+class DatabaseSettingsWidgetGeneral;
 }
 
-class DatabaseSettingsPageMetaData : public DatabaseSettingsPage
+class DatabaseSettingsWidgetGeneral : public DatabaseSettingsWidget
 {
-Q_OBJECT
+    Q_OBJECT
 
 public:
-    explicit DatabaseSettingsPageMetaData(QWidget* parent = nullptr);
-    Q_DISABLE_COPY(DatabaseSettingsPageMetaData);
-    ~DatabaseSettingsPageMetaData() override;
+    explicit DatabaseSettingsWidgetGeneral(QWidget* parent = nullptr);
+    Q_DISABLE_COPY(DatabaseSettingsWidgetGeneral);
+    ~DatabaseSettingsWidgetGeneral() override;
 
-    inline bool hasAdvancedMode() const override { return false; }
+    inline bool hasAdvancedMode() const override { return true; }
 
 public slots:
-    void initializePage() override;
-    void uninitializePage() override;
+    void initialize() override;
+    void uninitialize() override;
     bool save() override;
 
 private:
-    const QScopedPointer<Ui::DatabaseSettingsPageMetaData> m_ui;
+    void truncateHistories();
+
+    const QScopedPointer<Ui::DatabaseSettingsWidgetGeneral> m_ui;
 };
 
-#endif //KEEPASSXC_DATABASESETTINGSWIDGEMETADATA_H
+#endif //KEEPASSXC_DATABASESETTINGSWIDGETGENERAL_H

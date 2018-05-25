@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2012 Felix Geyer <debfx@fobos.de>
+ *  Copyright (C) 2018 KeePassXC Team <team@keepassxc.org>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -15,43 +15,31 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KEEPASSX_DATABASESETTINGSWIDGET_H
-#define KEEPASSX_DATABASESETTINGSWIDGET_H
+#ifndef KEEPASSXC_DATABASESETTINGSWIDGET_H
+#define KEEPASSXC_DATABASESETTINGSWIDGET_H
 
-#include <QScopedPointer>
-#include "gui/DialogyWidget.h"
+#include "gui/settings/SettingsWidget.h"
+
+#include <QPointer>
 
 class Database;
-class DatabaseSettingsPageGeneral;
-class DatabaseSettingsPageEncryption;
 
-namespace Ui
-{
-    class DatabaseSettingsWidget;
-}
-
-class DatabaseSettingsWidget : public DialogyWidget
+/**
+ * Pure-virtual base class for KeePassXC database settings widgets.
+ */
+class DatabaseSettingsWidget : public SettingsWidget
 {
     Q_OBJECT
 
 public:
     explicit DatabaseSettingsWidget(QWidget* parent = nullptr);
+    Q_DISABLE_COPY(DatabaseSettingsWidget);
     ~DatabaseSettingsWidget() override;
-    Q_DISABLE_COPY(DatabaseSettingsWidget)
 
-    void load(Database* db);
+    virtual void load(Database* db);
 
-signals:
-    void editFinished(bool accepted);
-
-private slots:
-    void save();
-    void reject();
-
-private:
-    const QScopedPointer<Ui::DatabaseSettingsWidget> m_ui;
-    DatabaseSettingsPageGeneral* m_generalPage;
-    DatabaseSettingsPageEncryption* m_encryptionPage;
+protected:
+    QPointer<Database> m_db;
 };
 
-#endif // KEEPASSX_DATABASESETTINGSWIDGET_H
+#endif //KEEPASSXC_DATABASESETTINGSWIDGET_H

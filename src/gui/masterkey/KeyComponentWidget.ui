@@ -2,6 +2,14 @@
 <ui version="4.0">
  <class>KeyComponentWidget</class>
  <widget class="QWidget" name="KeyComponentWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>276</width>
+    <height>79</height>
+   </rect>
+  </property>
   <layout class="QVBoxLayout" name="verticalLayout_5">
    <property name="leftMargin">
     <number>0</number>
@@ -28,9 +36,6 @@
      </property>
      <property name="title">
       <string>Key Component</string>
-     </property>
-     <property name="flat">
-      <bool>true</bool>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_4">
       <property name="spacing">

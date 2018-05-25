@@ -1,6 +1,5 @@
 /*
- *  Copyright (C) 2012 Felix Geyer <debfx@fobos.de>
- *  Copyright (C) 2017 KeePassXC Team <team@keepassxc.org>
+ *  Copyright (C) 2018 KeePassXC Team <team@keepassxc.org>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,35 +15,34 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KEEPASSX_CHANGEMASTERKEYWIDGET_H
-#define KEEPASSX_CHANGEMASTERKEYWIDGET_H
+#ifndef KEEPASSXC_DATABASESETTINGSPAGECHANGEMASTERKEY_H
+#define KEEPASSXC_DATABASESETTINGSPAGECHANGEMASTERKEY_H
 
+#include "config-keepassx.h"
 #include "DatabaseSettingsWidget.h"
+#include <QPointer>
 
-#include <QScopedPointer>
-
-class QLabel;
-namespace Ui
-{
-class ChangeMasterKeyWidget;
-}
-
-class KeyComponentWidget;
+class Database;
 class Key;
 class CompositeKey;
 class ChallengeResponseKey;
+class KeyComponentWidget;
+class PasswordEditWidget;
+class KeyFileEditWidget;
+class YubiKeyEditWidget;
 
-class ChangeMasterKeyWidget : public DatabaseSettingsWidget
+class DatabaseSettingsWidgetChangeMasterKey: public DatabaseSettingsWidget
 {
     Q_OBJECT
 
 public:
-    explicit ChangeMasterKeyWidget(QWidget* parent = nullptr);
-    Q_DISABLE_COPY(ChangeMasterKeyWidget);
-    ~ChangeMasterKeyWidget() override;
+    explicit DatabaseSettingsWidgetChangeMasterKey(QWidget* parent = nullptr);
+    Q_DISABLE_COPY(DatabaseSettingsWidgetChangeMasterKey);
+    ~DatabaseSettingsWidgetChangeMasterKey() override;
 
     void load(Database* db) override;
-    bool hasAdvancedMode() const override;
+
+    inline bool hasAdvancedMode() const override { return false; }
 
 public slots:
     void initialize() override;
@@ -60,7 +58,11 @@ private:
                            QSharedPointer<CompositeKey>& newKey,
                            QSharedPointer<ChallengeResponseKey>& oldKey);
 
-    const QScopedPointer<Ui::ChangeMasterKeyWidget> m_ui;
+    const QPointer<PasswordEditWidget> m_passwordEditWidget;
+    const QPointer<KeyFileEditWidget> m_keyFileEditWidget;
+#ifdef WITH_XC_YUBIKEY
+    const QPointer<YubiKeyEditWidget> m_yubiKeyEditWidget;
+#endif
 };
 
-#endif // KEEPASSX_CHANGEMASTERKEYWIDGET_H
+#endif //KEEPASSXC_DATABASESETTINGSPAGECHANGEMASTERKEY_H

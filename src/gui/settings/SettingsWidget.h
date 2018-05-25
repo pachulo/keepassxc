@@ -15,24 +15,24 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KEEPASSXC_SETTINGSPAGE_H
-#define KEEPASSXC_SETTINGSPAGE_H
+#ifndef KEEPASSXC_SETTINGSWIDGET_H
+#define KEEPASSXC_SETTINGSWIDGET_H
 
 #include <QWidget>
 
 class Database;
 
 /**
- * Pure-virtual base class for KeePassXC settings pages.
+ * Pure-virtual base class for KeePassXC settings widgets.
  */
-class SettingsPage : public QWidget
+class SettingsWidget : public QWidget
 {
-Q_OBJECT
+    Q_OBJECT
 
 public:
-    explicit SettingsPage(QWidget* parent = nullptr);
-    Q_DISABLE_COPY(SettingsPage);
-    ~SettingsPage() override;
+    explicit SettingsWidget(QWidget* parent = nullptr);
+    Q_DISABLE_COPY(SettingsWidget);
+    ~SettingsWidget() override;
 
     /**
      * @return true if widget has an advanced mode
@@ -43,14 +43,14 @@ public:
 
 public slots:
     /**
-     * Initialize settings page.
+     * Initialize settings widget.
      */
-    virtual void initializePage() = 0;
+    virtual void initialize() = 0;
 
     /**
-     * Perform needed clean-up operations before page is destroyed or re-initialized.
+     * Perform needed clean-up operations before widget is destroyed or re-initialized.
      */
-    virtual void uninitializePage() = 0;
+    virtual void uninitialize() = 0;
 
     /**
      * Save settings.
@@ -72,4 +72,4 @@ private:
     bool m_advancedMode = false;
 };
 
-#endif //KEEPASSXC_SETTINGSPAGE_H
+#endif //KEEPASSXC_SETTINGSWIDGET_H

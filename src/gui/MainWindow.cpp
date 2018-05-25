@@ -57,7 +57,7 @@
 #endif
 
 #include "gui/PasswordGeneratorWidget.h"
-#include "gui/SettingsWidget.h"
+#include "gui/ApplicationSettingsWidget.h"
 
 #ifdef WITH_XC_BROWSER
 class BrowserPlugin : public ISettingsPage

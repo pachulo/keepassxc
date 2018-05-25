@@ -124,7 +124,7 @@ set(keepassx_SOURCES
     gui/MessageWidget.cpp
     gui/PasswordEdit.cpp
     gui/PasswordGeneratorWidget.cpp
-    gui/SettingsWidget.cpp
+    gui/ApplicationSettingsWidget.cpp
     gui/SearchWidget.cpp
     gui/SortFilterHideProxyModel.cpp
     gui/SetupTotpDialog.cpp
@@ -153,13 +153,14 @@ set(keepassx_SOURCES
     gui/masterkey/PasswordEditWidget.cpp
     gui/masterkey/YubiKeyEditWidget.cpp
     gui/masterkey/KeyFileEditWidget.cpp
-    gui/settings/SettingsPage.cpp
+    gui/settings/SettingsWidget.cpp
     gui/dbsettings/ChangeMasterKeyWidget.cpp
     gui/dbsettings/DatabaseSettingsWidget.cpp
-    gui/dbsettings/DatabaseSettingsPageGeneral.cpp
-    gui/dbsettings/DatabaseSettingsPageMetaData.cpp
-    gui/dbsettings/DatabaseSettingsPageEncryption.cpp
-    gui/dbsettings/DatabaseSettingsPage.cpp
+    gui/dbsettings/DatabaseSettingsDialog.cpp
+    gui/dbsettings/DatabaseSettingsWidgetGeneral.cpp
+    gui/dbsettings/DatabaseSettingsWidgetMetaData.cpp
+    gui/dbsettings/DatabaseSettingsWidgetEncryption.cpp
+    gui/dbsettings/DatabaseSettingsWidgetChangeMasterKey.cpp
     gui/wizard/NewDatabaseWizard.cpp
     gui/wizard/NewDatabaseWizardPage.cpp
     gui/wizard/NewDatabaseWizardPageMetaData.cpp

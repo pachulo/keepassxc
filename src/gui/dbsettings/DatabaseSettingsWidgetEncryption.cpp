@@ -15,8 +15,8 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "DatabaseSettingsPageEncryption.h"
-#include "ui_DatabaseSettingsPageEncryption.h"
+#include "DatabaseSettingsWidgetEncryption.h"
+#include "ui_DatabaseSettingsWidgetEncryption.h"
 #include "core/Database.h"
 #include "core/Global.h"
 #include "core/AsyncTask.h"
@@ -27,9 +27,9 @@
 #include <QApplication>
 #include <QPushButton>
 
-DatabaseSettingsPageEncryption::DatabaseSettingsPageEncryption(QWidget* parent)
-    : DatabaseSettingsPage(parent)
-    , m_ui(new Ui::DatabaseSettingsPageEncryption())
+DatabaseSettingsWidgetEncryption::DatabaseSettingsWidgetEncryption(QWidget* parent)
+    : DatabaseSettingsWidget(parent)
+    , m_ui(new Ui::DatabaseSettingsWidgetEncryption())
 {
     m_ui->setupUi(this);
 
@@ -46,11 +46,11 @@ DatabaseSettingsPageEncryption::DatabaseSettingsPageEncryption(QWidget* parent)
     connect(m_ui->compatibilitySelection, SIGNAL(currentIndexChanged(int)), SLOT(updateFormatCompatibility(int)));
 }
 
-DatabaseSettingsPageEncryption::~DatabaseSettingsPageEncryption()
+DatabaseSettingsWidgetEncryption::~DatabaseSettingsWidgetEncryption()
 {
 }
 
-void DatabaseSettingsPageEncryption::initializePage()
+void DatabaseSettingsWidgetEncryption::initialize()
 {
     updateFormatCompatibility(0);
     m_ui->decryptionTimeSlider->setValue(1000);
@@ -61,11 +61,11 @@ void DatabaseSettingsPageEncryption::initializePage()
     loadKdfParameters();
 }
 
-void DatabaseSettingsPageEncryption::uninitializePage()
+void DatabaseSettingsWidgetEncryption::uninitialize()
 {
 }
 
-void DatabaseSettingsPageEncryption::setupAlgorithmComboBox()
+void DatabaseSettingsWidgetEncryption::setupAlgorithmComboBox()
 {
     m_ui->algorithmComboBox->clear();
     for (auto& cipher : asConst(KeePass2::CIPHERS)) {
@@ -78,7 +78,7 @@ void DatabaseSettingsPageEncryption::setupAlgorithmComboBox()
     }
 }
 
-void DatabaseSettingsPageEncryption::setupKdfComboBox()
+void DatabaseSettingsWidgetEncryption::setupKdfComboBox()
 {
     // Setup kdf combo box
     m_ui->kdfComboBox->blockSignals(true);
@@ -90,7 +90,7 @@ void DatabaseSettingsPageEncryption::setupKdfComboBox()
     m_ui->kdfComboBox->blockSignals(false);
 }
 
-void DatabaseSettingsPageEncryption::loadKdfParameters()
+void DatabaseSettingsWidgetEncryption::loadKdfParameters()
 {
     if (!m_db) {
         return;
@@ -113,7 +113,7 @@ void DatabaseSettingsPageEncryption::loadKdfParameters()
     }
 }
 
-bool DatabaseSettingsPageEncryption::save()
+bool DatabaseSettingsWidgetEncryption::save()
 {
     auto kdf = m_db->kdf();
 
@@ -191,7 +191,7 @@ bool DatabaseSettingsPageEncryption::save()
     return ok;
 }
 
-void DatabaseSettingsPageEncryption::transformRoundsBenchmark()
+void DatabaseSettingsWidgetEncryption::transformRoundsBenchmark()
 {
     QApplication::setOverrideCursor(QCursor(Qt::BusyCursor));
     m_ui->transformBenchmarkButton->setEnabled(false);
@@ -218,7 +218,7 @@ void DatabaseSettingsPageEncryption::transformRoundsBenchmark()
     QApplication::restoreOverrideCursor();
 }
 
-void DatabaseSettingsPageEncryption::kdfChanged(int index)
+void DatabaseSettingsWidgetEncryption::kdfChanged(int index)
 {
     Uuid id(m_ui->kdfComboBox->itemData(index).toByteArray());
 
@@ -241,7 +241,7 @@ void DatabaseSettingsPageEncryption::kdfChanged(int index)
 /**
  * Update memory spin box suffix on value change.
  */
-void DatabaseSettingsPageEncryption::memoryChanged(int value)
+void DatabaseSettingsWidgetEncryption::memoryChanged(int value)
 {
     m_ui->memorySpinBox->setSuffix(tr(" MiB", "Abbreviation for Mebibytes (KDF settings)", value));
 }
@@ -249,14 +249,14 @@ void DatabaseSettingsPageEncryption::memoryChanged(int value)
 /**
  * Update parallelism spin box suffix on value change.
  */
-void DatabaseSettingsPageEncryption::parallelismChanged(int value)
+void DatabaseSettingsWidgetEncryption::parallelismChanged(int value)
 {
     m_ui->parallelismSpinBox->setSuffix(tr(" thread(s)", "Threads for parallel execution (KDF settings)", value));
 }
 
-void DatabaseSettingsPageEncryption::setAdvancedMode(bool advanced)
+void DatabaseSettingsWidgetEncryption::setAdvancedMode(bool advanced)
 {
-    DatabaseSettingsPage::setAdvancedMode(advanced);
+    DatabaseSettingsWidget::setAdvancedMode(advanced);
 
     if (advanced) {
         loadKdfParameters();
@@ -271,7 +271,7 @@ void DatabaseSettingsPageEncryption::setAdvancedMode(bool advanced)
     }
 }
 
-void DatabaseSettingsPageEncryption::updateDecryptionTime(int value)
+void DatabaseSettingsWidgetEncryption::updateDecryptionTime(int value)
 {
     if (value < 1000) {
         m_ui->decryptionTimeValueLabel->setText(tr("%1 ms", "milliseconds", value).arg(value));
@@ -280,7 +280,7 @@ void DatabaseSettingsPageEncryption::updateDecryptionTime(int value)
     }
 }
 
-void DatabaseSettingsPageEncryption::updateFormatCompatibility(int index)
+void DatabaseSettingsWidgetEncryption::updateFormatCompatibility(int index)
 {
     if (!m_db) {
         return;

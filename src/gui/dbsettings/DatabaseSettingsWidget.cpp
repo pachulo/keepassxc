@@ -1,6 +1,5 @@
 /*
  *  Copyright (C) 2018 KeePassXC Team <team@keepassxc.org>
- *  Copyright (C) 2012 Felix Geyer <debfx@fobos.de>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,52 +16,27 @@
  */
 
 #include "DatabaseSettingsWidget.h"
-#include "DatabaseSettingsPageGeneral.h"
-#include "DatabaseSettingsPageEncryption.h"
-#include "ui_DatabaseSettingsWidget.h"
+#include "core/Database.h"
 
-#include "core/FilePath.h"
-
-#include <QWizardPage>
+#include <QWidget>
 
 DatabaseSettingsWidget::DatabaseSettingsWidget(QWidget* parent)
-    : DialogyWidget(parent)
-    , m_ui(new Ui::DatabaseSettingsWidget())
-    , m_generalPage(new DatabaseSettingsPageGeneral())
-    , m_encryptionPage(new DatabaseSettingsPageEncryption())
+    : SettingsWidget(parent)
 {
-    m_ui->setupUi(this);
-
-    connect(m_ui->buttonBox, SIGNAL(accepted()), SLOT(save()));
-    connect(m_ui->buttonBox, SIGNAL(rejected()), SLOT(reject()));
-
-    m_ui->categoryList->addCategory(tr("General"), FilePath::instance()->icon("categories", "preferences-other"));
-    m_ui->categoryList->addCategory(tr("Encryption"), FilePath::instance()->icon("actions", "document-encrypt"));
-    m_ui->stackedWidget->addWidget(m_generalPage);
-    m_ui->stackedWidget->addWidget(m_encryptionPage);
-
-    connect(m_ui->categoryList, SIGNAL(categoryChanged(int)), m_ui->stackedWidget, SLOT(setCurrentIndex(int)));
 }
 
 DatabaseSettingsWidget::~DatabaseSettingsWidget()
 {
 }
 
+/**
+ * Load the database to be configured by this page and initialize the page.
+ * The page will NOT take ownership of the database.
+ *
+ * @param db database object to be configured
+ */
 void DatabaseSettingsWidget::load(Database* db)
 {
-    m_ui->categoryList->setCurrentCategory(0);
-    m_generalPage->load(db);
-    m_encryptionPage->load(db);
-}
-
-void DatabaseSettingsWidget::save()
-{
-    m_generalPage->save();
-    m_encryptionPage->save();
-    emit editFinished(true);
-}
-
-void DatabaseSettingsWidget::reject()
-{
-    emit editFinished(false);
+    m_db = db;
+    initialize();
 }

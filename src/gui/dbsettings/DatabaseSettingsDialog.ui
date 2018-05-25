@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>DatabaseSettingsWidget</class>
- <widget class="QWidget" name="DatabaseSettingsWidget">
+ <class>DatabaseSettingsDialog</class>
+ <widget class="QWidget" name="DatabaseSettingsDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
