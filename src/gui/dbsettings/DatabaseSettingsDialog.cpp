@@ -22,6 +22,7 @@
 #include "DatabaseSettingsWidgetEncryption.h"
 #include "DatabaseSettingsWidgetChangeMasterKey.h"
 
+#include "core/Config.h"
 #include "core/FilePath.h"
 
 DatabaseSettingsDialog::DatabaseSettingsDialog(QWidget* parent)
@@ -66,6 +67,7 @@ void DatabaseSettingsDialog::load(Database* db)
     m_generalWidget->load(db);
     m_masterKeyWidget->load(db);
     m_encryptionWidget->load(db);
+    m_ui->advancedSettingsToggle->setChecked(config()->get("GUI/AdvancedSettings", false).toBool());
 }
 
 /**
@@ -121,4 +123,6 @@ void DatabaseSettingsDialog::toggleAdvancedMode(bool advanced)
 
     if (m_encryptionWidget->hasAdvancedMode())
         m_encryptionWidget->setAdvancedMode(advanced);
+
+    config()->set("GUI/AdvancedSettings", advanced);
 }
