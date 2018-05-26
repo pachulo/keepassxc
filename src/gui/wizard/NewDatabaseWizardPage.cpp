@@ -87,9 +87,9 @@ bool NewDatabaseWizardPage::validatePage()
         return false;
     }
 
-    bool returnVal = m_pageWidget->save();
+    bool valid = m_pageWidget->save();
     m_pageWidget->uninitialize();
-    return returnVal;
+    return valid;
 }
 
 /**

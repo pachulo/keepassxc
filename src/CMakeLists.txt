@@ -164,6 +164,7 @@ set(keepassx_SOURCES
     gui/wizard/NewDatabaseWizardPage.cpp
     gui/wizard/NewDatabaseWizardPageMetaData.cpp
     gui/wizard/NewDatabaseWizardPageEncryption.cpp
+    gui/wizard/NewDatabaseWizardPageMasterKey.cpp
     keys/ChallengeResponseKey.h
     keys/CompositeKey.cpp
     keys/drivers/YubiKey.h

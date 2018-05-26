@@ -89,9 +89,11 @@ void DatabaseTabWidget::toggleTabbar()
 void DatabaseTabWidget::newDatabase()
 {
     NewDatabaseWizard wizard;
-    wizard.exec();
+    if (!wizard.exec()) {
+        return;
+    }
 
-    auto db = wizard.takeDatabase();
+    auto* db = wizard.takeDatabase();
     if (db) {
         DatabaseManagerStruct dbStruct;
         dbStruct.dbWidget = new DatabaseWidget(db, this);

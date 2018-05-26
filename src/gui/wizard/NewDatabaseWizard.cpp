@@ -18,6 +18,7 @@
 #include "NewDatabaseWizard.h"
 #include "NewDatabaseWizardPageMetaData.h"
 #include "NewDatabaseWizardPageEncryption.h"
+#include "NewDatabaseWizardPageMasterKey.h"
 
 #include "core/Global.h"
 #include "core/Database.h"
@@ -35,17 +36,14 @@ NewDatabaseWizard::NewDatabaseWizard(QWidget* parent)
     setOption(QWizard::WizardOption::HaveHelpButton, false);
 
     m_pages << new NewDatabaseWizardPageMetaData()
-            << new NewDatabaseWizardPageEncryption();
+            << new NewDatabaseWizardPageEncryption()
+            << new NewDatabaseWizardPageMasterKey();
 
     for (auto const& page: asConst(m_pages)) {
         addPage(page);
     }
 
-//    m_changeKeyPage->setLayout(new QVBoxLayout());
-//    m_changeKeyPage->layout()->addWidget(m_changeKeyWidget);
-//    m_changeKeyPage->setTitle(tr("Set Master Key"));
-//    m_changeKeyPage->setSubTitle(tr("As a last step, you need to set a strong master key to protect your database."));
-//    addPage(m_changeKeyPage);
+    setWindowTitle(tr("Create a new KeePassXC database..."));
 
     // TODO: change image
     setPixmap(QWizard::BackgroundPixmap, filePath()->applicationIcon().pixmap(512, 512));
@@ -57,14 +55,7 @@ NewDatabaseWizard::~NewDatabaseWizard()
 
 bool NewDatabaseWizard::validateCurrentPage()
 {
-    bool returnVal = QWizard::validateCurrentPage();
-
-//    if (currentPage() == m_changeKeyPage && m_db) {
-//        // TODO: set up and integrate change master key widget properly
-//        m_db->setKey(m_changeKeyWidget->newMasterKey());
-//    }
-
-    return returnVal;
+    return m_pages[currentId()]->validatePage();
 }
 
 Database* NewDatabaseWizard::takeDatabase()
