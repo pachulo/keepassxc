@@ -26,6 +26,7 @@
 #include "gui/masterkey/YubiKeyEditWidget.h"
 
 #include <QVBoxLayout>
+#include <QSpacerItem>
 
 DatabaseSettingsWidgetChangeMasterKey::DatabaseSettingsWidgetChangeMasterKey(QWidget* parent)
     : DatabaseSettingsWidget(parent)
@@ -35,12 +36,14 @@ DatabaseSettingsWidgetChangeMasterKey::DatabaseSettingsWidgetChangeMasterKey(QWi
     , m_yubiKeyEditWidget(new YubiKeyEditWidget(this))
 #endif
 {
-    setLayout(new QVBoxLayout());
-    layout()->addWidget(m_passwordEditWidget);
-    layout()->addWidget(m_keyFileEditWidget);
+    auto* vbox = new QVBoxLayout(this);
+    vbox->addWidget(m_passwordEditWidget);
+    vbox->addWidget(m_keyFileEditWidget);
 #ifdef WITH_XC_YUBIKEY
-    layout()->addWidget(m_yubiKeyEditWidget);
+    vbox->addWidget(m_yubiKeyEditWidget);
 #endif
+    vbox->addStretch();
+    setLayout(vbox);
 }
 
 DatabaseSettingsWidgetChangeMasterKey::~DatabaseSettingsWidgetChangeMasterKey()

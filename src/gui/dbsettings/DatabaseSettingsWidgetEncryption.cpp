@@ -53,7 +53,7 @@ DatabaseSettingsWidgetEncryption::~DatabaseSettingsWidgetEncryption()
 void DatabaseSettingsWidgetEncryption::initialize()
 {
     updateFormatCompatibility(0);
-    m_ui->decryptionTimeSlider->setValue(1000);
+    m_ui->decryptionTimeSlider->setValue(10);
     updateDecryptionTime(m_ui->decryptionTimeSlider->value());
 
     setupAlgorithmComboBox();
@@ -118,7 +118,7 @@ bool DatabaseSettingsWidgetEncryption::save()
     auto kdf = m_db->kdf();
 
     if (!advancedMode()) {
-        int time = m_ui->decryptionTimeSlider->value();
+        int time = m_ui->decryptionTimeSlider->value() * 100;
         updateFormatCompatibility(m_ui->compatibilitySelection->currentIndex());
 
         QApplication::setOverrideCursor(QCursor(Qt::BusyCursor));
@@ -273,10 +273,10 @@ void DatabaseSettingsWidgetEncryption::setAdvancedMode(bool advanced)
 
 void DatabaseSettingsWidgetEncryption::updateDecryptionTime(int value)
 {
-    if (value < 1000) {
-        m_ui->decryptionTimeValueLabel->setText(tr("%1 ms", "milliseconds", value).arg(value));
+    if (value < 10) {
+        m_ui->decryptionTimeValueLabel->setText(tr("%1 ms", "milliseconds", value * 100).arg(value * 100));
     } else {
-        m_ui->decryptionTimeValueLabel->setText(tr("%1 s", "seconds", value / 1000).arg(value / 1000.0, 0, 'f', 1));
+        m_ui->decryptionTimeValueLabel->setText(tr("%1 s", "seconds", value / 10).arg(value / 10.0, 0, 'f', 1));
     }
 }
 

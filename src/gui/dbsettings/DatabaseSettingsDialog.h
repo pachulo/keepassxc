@@ -18,12 +18,16 @@
 #ifndef KEEPASSX_DATABASESETTINGSWIDGET_H
 #define KEEPASSX_DATABASESETTINGSWIDGET_H
 
-#include <QScopedPointer>
 #include "gui/DialogyWidget.h"
+
+#include <QScopedPointer>
+#include <QPointer>
 
 class Database;
 class DatabaseSettingsWidgetGeneral;
 class DatabaseSettingsWidgetEncryption;
+class DatabaseSettingsWidgetChangeMasterKey;
+class QTabWidget;
 
 namespace Ui
 {
@@ -40,6 +44,7 @@ public:
     Q_DISABLE_COPY(DatabaseSettingsDialog);
 
     void load(Database* db);
+    void showMasterKeySettings();
 
 signals:
     void editFinished(bool accepted);
@@ -47,11 +52,15 @@ signals:
 private slots:
     void save();
     void reject();
+    void pageChanged();
+    void toggleAdvancedMode(bool advanced);
 
 private:
     const QScopedPointer<Ui::DatabaseSettingsDialog> m_ui;
-    DatabaseSettingsWidgetGeneral* m_generalPage;
-    DatabaseSettingsWidgetEncryption* m_encryptionPage;
+    QPointer<DatabaseSettingsWidgetGeneral> m_generalWidget;
+    QPointer<QTabWidget> m_securityTabWidget;
+    QPointer<DatabaseSettingsWidgetChangeMasterKey> m_masterKeyWidget;
+    QPointer<DatabaseSettingsWidgetEncryption> m_encryptionWidget;
 };
 
 #endif // KEEPASSX_DATABASESETTINGSWIDGET_H

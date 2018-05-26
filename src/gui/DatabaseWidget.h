@@ -157,7 +157,7 @@ public slots:
     void switchToView(bool accepted);
     void switchToEntryEdit();
     void switchToGroupEdit();
-    void switchToMasterKeyChange(bool disableCancel = false);
+    void switchToMasterKeyChange();
     void switchToDatabaseSettings();
     void switchToOpenDatabase(const QString& filePath);
     void switchToOpenDatabase(const QString& filePath, const QString& password, const QString& keyFile);
@@ -195,7 +195,6 @@ private slots:
     void emitPressedEntry();
     void emitPressedEntry(Entry* currentEntry);
     void emitPressedGroup(Group* currentGroup);
-    void updateMasterKey(bool accepted);
     void openDatabase(bool accepted);
     void mergeDatabase(bool accepted);
     void unlockDatabase(bool accepted);
