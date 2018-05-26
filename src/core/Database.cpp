@@ -264,13 +264,20 @@ void Database::setCompressionAlgo(Database::CompressionAlgorithm algo)
 /**
  * Set and transform a new encryption key.
  *
- * @param key key to set and transform
+ * @param key key to set and transform or nullptr to reset the key
  * @param updateChangedTime true to update database change time
  * @param updateTransformSalt true to update the transform salt
  * @return true on success
  */
 bool Database::setKey(QSharedPointer<const CompositeKey> key, bool updateChangedTime, bool updateTransformSalt)
 {
+    if (!key) {
+        m_data.key = nullptr;
+        m_data.transformedMasterKey = {};
+        m_data.hasKey = false;
+        return true;
+    }
+
     if (updateTransformSalt) {
         m_data.kdf->randomizeSeed();
         Q_ASSERT(!m_data.kdf->seed().isEmpty());

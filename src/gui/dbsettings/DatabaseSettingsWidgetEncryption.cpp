@@ -18,6 +18,7 @@
 #include "DatabaseSettingsWidgetEncryption.h"
 #include "ui_DatabaseSettingsWidgetEncryption.h"
 #include "core/Database.h"
+#include "core/Metadata.h"
 #include "core/Global.h"
 #include "core/AsyncTask.h"
 #include "gui/MessageBox.h"
@@ -27,21 +28,26 @@
 #include <QApplication>
 #include <QPushButton>
 
+const char* DatabaseSettingsWidgetEncryption::CD_DECRYPTION_TIME_PREFERENCE_KEY = "KPXC_DECRYPTION_TIME_PREFERENCE";
+
 DatabaseSettingsWidgetEncryption::DatabaseSettingsWidgetEncryption(QWidget* parent)
     : DatabaseSettingsWidget(parent)
     , m_ui(new Ui::DatabaseSettingsWidgetEncryption())
 {
     m_ui->setupUi(this);
 
-    connect(m_ui->transformBenchmarkButton, SIGNAL(clicked()), SLOT(transformRoundsBenchmark()));
-    connect(m_ui->kdfComboBox, SIGNAL(currentIndexChanged(int)), SLOT(kdfChanged(int)));
+    connect(m_ui->transformBenchmarkButton, SIGNAL(clicked()), SLOT(benchmarkTransformRounds()));
+    connect(m_ui->kdfComboBox, SIGNAL(currentIndexChanged(int)), SLOT(changeKdf(int)));
 
     connect(m_ui->memorySpinBox, SIGNAL(valueChanged(int)), this, SLOT(memoryChanged(int)));
     connect(m_ui->parallelismSpinBox, SIGNAL(valueChanged(int)), this, SLOT(parallelismChanged(int)));
 
     m_ui->compatibilitySelection->addItem(tr("KDBX 4.0 (recommended)"), KeePass2::KDF_ARGON2.toByteArray());
     m_ui->compatibilitySelection->addItem(tr("KDBX 3.1"), KeePass2::KDF_AES_KDBX3.toByteArray());
+    m_ui->decryptionTimeSlider->setValue(10);
+    updateDecryptionTime(m_ui->decryptionTimeSlider->value());
 
+    connect(m_ui->activateChangeDecryptionTimeButton, SIGNAL(clicked()), SLOT(activateChangeDecryptionTime()));
     connect(m_ui->decryptionTimeSlider, SIGNAL(valueChanged(int)), SLOT(updateDecryptionTime(int)));
     connect(m_ui->compatibilitySelection, SIGNAL(currentIndexChanged(int)), SLOT(updateFormatCompatibility(int)));
 }
@@ -52,10 +58,41 @@ DatabaseSettingsWidgetEncryption::~DatabaseSettingsWidgetEncryption()
 
 void DatabaseSettingsWidgetEncryption::initialize()
 {
-    updateFormatCompatibility(0);
-    m_ui->decryptionTimeSlider->setValue(10);
-    updateDecryptionTime(m_ui->decryptionTimeSlider->value());
+    Q_ASSERT(m_db);
+    if (!m_db) {
+        return;
+    }
 
+    m_formatCompatibilityDirty = false;
+
+    bool markDirty = false;
+    if (!m_db->kdf()) {
+        m_db->setKdf(KeePass2::uuidToKdf(KeePass2::KDF_ARGON2));
+        markDirty = true;
+    }
+    if (!m_db->key()) {
+        m_db->setKey(QSharedPointer<CompositeKey>::create());
+        m_db->setCipher(KeePass2::CIPHER_AES);
+        markDirty = true;
+    }
+
+    auto* cd = m_db->metadata()->customData();
+    if (cd->hasKey(CD_DECRYPTION_TIME_PREFERENCE_KEY)) {
+        int decryptionTime = qMax(100, cd->value(CD_DECRYPTION_TIME_PREFERENCE_KEY).toInt());
+        bool block = m_ui->decryptionTimeSlider->blockSignals(true);
+        m_ui->decryptionTimeSlider->setValue(decryptionTime / 100);
+        updateDecryptionTime(decryptionTime / 100);
+        m_ui->decryptionTimeSlider->blockSignals(block);
+        m_ui->activateChangeDecryptionTimeButton->setVisible(false);
+    } else {
+        m_ui->decryptionTimeSettings->setVisible(markDirty);
+        m_ui->activateChangeDecryptionTimeButton->setVisible(!markDirty);
+        if (!markDirty) {
+            m_ui->decryptionTimeValueLabel->setText(tr("unchanged", "Database decryption time is unchanged"));
+        }
+    }
+
+    updateFormatCompatibility(m_db->kdf()->uuid() == KeePass2::KDF_AES_KDBX3 ? KDBX3 : KDBX4, markDirty);
     setupAlgorithmComboBox();
     setupKdfComboBox();
     loadKdfParameters();
@@ -81,47 +118,85 @@ void DatabaseSettingsWidgetEncryption::setupAlgorithmComboBox()
 void DatabaseSettingsWidgetEncryption::setupKdfComboBox()
 {
     // Setup kdf combo box
-    m_ui->kdfComboBox->blockSignals(true);
+    bool block = m_ui->kdfComboBox->blockSignals(true);
     m_ui->kdfComboBox->clear();
     for (auto& kdf : asConst(KeePass2::KDFS)) {
         m_ui->kdfComboBox->addItem(QCoreApplication::translate("KeePass2", kdf.second.toUtf8()),
                                    kdf.first.toByteArray());
     }
-    m_ui->kdfComboBox->blockSignals(false);
+    m_ui->kdfComboBox->blockSignals(block);
 }
 
 void DatabaseSettingsWidgetEncryption::loadKdfParameters()
 {
+    Q_ASSERT(m_db);
     if (!m_db) {
         return;
     }
 
     auto kdf = m_db->kdf();
+    Q_ASSERT(kdf);
+    if (!kdf) {
+        return;
+    }
 
     int kdfIndex = m_ui->kdfComboBox->findData(m_db->kdf()->uuid().toByteArray());
     if (kdfIndex > -1) {
-        m_ui->kdfComboBox->blockSignals(true);
+        bool block = m_ui->kdfComboBox->blockSignals(true);
         m_ui->kdfComboBox->setCurrentIndex(kdfIndex);
-        m_ui->kdfComboBox->blockSignals(false);
+        m_ui->kdfComboBox->blockSignals(block);
     }
 
     m_ui->transformRoundsSpinBox->setValue(kdf->rounds());
     if (m_db->kdf()->uuid() == KeePass2::KDF_ARGON2) {
         auto argon2Kdf = kdf.staticCast<Argon2Kdf>();
-        m_ui->memorySpinBox->setValue(static_cast<int>(argon2Kdf->memory()) / (1u << 10));
+        m_ui->memorySpinBox->setValue(static_cast<int>(argon2Kdf->memory()) / (1 << 10));
         m_ui->parallelismSpinBox->setValue(argon2Kdf->parallelism());
     }
+
+    updateKdfFields();
+}
+
+void DatabaseSettingsWidgetEncryption::updateKdfFields()
+{
+    Uuid id = m_db->kdf()->uuid();
+
+    bool memoryVisible = (id == KeePass2::KDF_ARGON2);
+    m_ui->memoryUsageLabel->setVisible(memoryVisible);
+    m_ui->memorySpinBox->setVisible(memoryVisible);
+
+    bool parallelismVisible = (id == KeePass2::KDF_ARGON2);
+    m_ui->parallelismLabel->setVisible(parallelismVisible);
+    m_ui->parallelismSpinBox->setVisible(parallelismVisible);
+}
+
+void DatabaseSettingsWidgetEncryption::activateChangeDecryptionTime()
+{
+    m_ui->decryptionTimeSettings->setVisible(true);
+    m_ui->activateChangeDecryptionTimeButton->setVisible(false);
+    updateDecryptionTime(m_ui->decryptionTimeSlider->value());
+    m_formatCompatibilityDirty = true;
 }
 
 bool DatabaseSettingsWidgetEncryption::save()
 {
+    Q_ASSERT(m_db);
+    if (!m_db) {
+        return false;
+    }
+
     auto kdf = m_db->kdf();
+    Q_ASSERT(kdf);
 
     if (!advancedMode()) {
-        int time = m_ui->decryptionTimeSlider->value() * 100;
-        updateFormatCompatibility(m_ui->compatibilitySelection->currentIndex());
+        if (kdf && !m_formatCompatibilityDirty && !m_ui->decryptionTimeSettings->isVisible()) {
+            return true;
+        }
 
-        QApplication::setOverrideCursor(QCursor(Qt::BusyCursor));
+        int time = m_ui->decryptionTimeSlider->value() * 100;
+        updateFormatCompatibility(m_ui->compatibilitySelection->currentIndex(), false);
+
+        QApplication::setOverrideCursor(Qt::BusyCursor);
 
         int rounds = AsyncTask::runAndWaitForFuture([&kdf, time]() { return kdf->benchmark(time); });
         kdf->setRounds(rounds);
@@ -131,6 +206,8 @@ bool DatabaseSettingsWidgetEncryption::save()
         bool ok = m_db->changeKdf(kdf);
 
         QApplication::restoreOverrideCursor();
+
+        m_db->metadata()->customData()->set(CD_DECRYPTION_TIME_PREFERENCE_KEY, QString("%1").arg(time));
 
         return ok;
     }
@@ -175,7 +252,7 @@ bool DatabaseSettingsWidgetEncryption::save()
         argon2Kdf->setParallelism(static_cast<quint32>(m_ui->parallelismSpinBox->value()));
     }
 
-    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+    QApplication::setOverrideCursor(Qt::WaitCursor);
     // TODO: we should probably use AsyncTask::runAndWaitForFuture() here,
     //       but not without making Database thread-safe
     bool ok = m_db->changeKdf(kdf);
@@ -191,9 +268,9 @@ bool DatabaseSettingsWidgetEncryption::save()
     return ok;
 }
 
-void DatabaseSettingsWidgetEncryption::transformRoundsBenchmark()
+void DatabaseSettingsWidgetEncryption::benchmarkTransformRounds(int millisecs)
 {
-    QApplication::setOverrideCursor(QCursor(Qt::BusyCursor));
+    QApplication::setOverrideCursor(Qt::BusyCursor);
     m_ui->transformBenchmarkButton->setEnabled(false);
     m_ui->transformRoundsSpinBox->setFocus();
 
@@ -211,31 +288,26 @@ void DatabaseSettingsWidgetEncryption::transformRoundsBenchmark()
     }
 
     // Determine the number of rounds required to meet 1 second delay
-    int rounds = AsyncTask::runAndWaitForFuture([&kdf]() { return kdf->benchmark(1000); });
+    int rounds = AsyncTask::runAndWaitForFuture([&kdf, millisecs]() { return kdf->benchmark(millisecs); });
 
     m_ui->transformRoundsSpinBox->setValue(rounds);
     m_ui->transformBenchmarkButton->setEnabled(true);
+    m_ui->decryptionTimeSlider->setValue(millisecs / 100);
     QApplication::restoreOverrideCursor();
 }
 
-void DatabaseSettingsWidgetEncryption::kdfChanged(int index)
+void DatabaseSettingsWidgetEncryption::changeKdf(int index)
 {
-    Uuid id(m_ui->kdfComboBox->itemData(index).toByteArray());
-
-    bool memoryEnabled = id == KeePass2::KDF_ARGON2;
-    m_ui->memoryUsageLabel->setEnabled(memoryEnabled);
-    m_ui->memorySpinBox->setEnabled(memoryEnabled);
-
-    bool parallelismEnabled = id == KeePass2::KDF_ARGON2;
-    m_ui->parallelismLabel->setEnabled(parallelismEnabled);
-    m_ui->parallelismSpinBox->setEnabled(parallelismEnabled);
-
-    if (m_db) {
-        m_db->setKdf(KeePass2::uuidToKdf(id));
+    Q_ASSERT(m_db);
+    if (!m_db) {
+        return;
     }
 
-    // TODO: why is this called sometimes when switching between KDBX formats in simple mode???
-    transformRoundsBenchmark();
+    Uuid id(m_ui->kdfComboBox->itemData(index).toByteArray());
+    m_db->setKdf(KeePass2::uuidToKdf(id));
+    updateKdfFields();
+    activateChangeDecryptionTime();
+    benchmarkTransformRounds();
 }
 
 /**
@@ -262,11 +334,7 @@ void DatabaseSettingsWidgetEncryption::setAdvancedMode(bool advanced)
         loadKdfParameters();
         m_ui->stackedWidget->setCurrentIndex(1);
     } else {
-        if (m_db->kdf()->uuid() == KeePass2::KDF_AES_KDBX3) {
-            m_ui->compatibilitySelection->setCurrentIndex(1);
-        } else {
-            m_ui->compatibilitySelection->setCurrentIndex(0);
-        }
+        m_ui->compatibilitySelection->setCurrentIndex(m_db->kdf()->uuid() == KeePass2::KDF_AES_KDBX3 ? KDBX3 : KDBX4);
         m_ui->stackedWidget->setCurrentIndex(0);
     }
 }
@@ -280,21 +348,31 @@ void DatabaseSettingsWidgetEncryption::updateDecryptionTime(int value)
     }
 }
 
-void DatabaseSettingsWidgetEncryption::updateFormatCompatibility(int index)
+void DatabaseSettingsWidgetEncryption::updateFormatCompatibility(int index, bool markDirty)
 {
+    Q_ASSERT(m_db);
     if (!m_db) {
         return;
     }
 
-    m_db->setCipher(KeePass2::CIPHER_AES);
+    if (m_ui->compatibilitySelection->currentIndex() != index) {
+        bool block = m_ui->compatibilitySelection->blockSignals(true);
+        m_ui->compatibilitySelection->setCurrentIndex(index);
+        m_ui->compatibilitySelection->blockSignals(block);
+    }
 
-    Uuid kdfUuid(m_ui->compatibilitySelection->itemData(index).toByteArray());
-    auto kdf = KeePass2::uuidToKdf(kdfUuid);
-    m_db->setKdf(kdf);
+     if (markDirty) {
+        Uuid kdfUuid(m_ui->compatibilitySelection->itemData(index).toByteArray());
+        auto kdf = KeePass2::uuidToKdf(kdfUuid);
+        m_db->setKdf(kdf);
 
-    if (kdf->uuid() == KeePass2::KDF_ARGON2) {
-        auto argon2Kdf = kdf.staticCast<Argon2Kdf>();
-        argon2Kdf->setMemory(128 * 1024);
-        argon2Kdf->setParallelism(static_cast<quint32>(QThread::idealThreadCount()));
+        if (kdf->uuid() == KeePass2::KDF_ARGON2) {
+            auto argon2Kdf = kdf.staticCast<Argon2Kdf>();
+            argon2Kdf->setMemory(128 * 1024);
+            argon2Kdf->setParallelism(static_cast<quint32>(QThread::idealThreadCount()));
+        }
+
+        activateChangeDecryptionTime();
+        m_formatCompatibilityDirty = true;
     }
 }

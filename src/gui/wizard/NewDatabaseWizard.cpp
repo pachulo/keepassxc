@@ -68,11 +68,8 @@ void NewDatabaseWizard::initializePage(int id)
     if (id == startId()) {
         m_db.reset(new Database());
         m_db->rootGroup()->setName(tr("Root", "Root group"));
-
-        auto emptyKey = QSharedPointer<CompositeKey>::create();
-        m_db->setKey(emptyKey);
-        m_db->setCipher(KeePass2::CIPHER_AES);
-        m_db->setKdf(KeePass2::uuidToKdf(KeePass2::KDF_ARGON2));
+        m_db->setKdf(nullptr);
+        m_db->setKey(nullptr);
     }
 
     m_pages[id]->setDatabase(m_db.data());

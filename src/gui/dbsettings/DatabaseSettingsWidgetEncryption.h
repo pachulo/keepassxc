@@ -47,18 +47,23 @@ public slots:
     bool save() override;
 
 private slots:
-    void transformRoundsBenchmark();
-    void kdfChanged(int index);
+    void benchmarkTransformRounds(int millisecs = 1000);
+    void changeKdf(int index);
     void memoryChanged(int value);
     void parallelismChanged(int value);
     void updateDecryptionTime(int value);
-    void updateFormatCompatibility(int index);
-
-private:
+    void updateFormatCompatibility(int index, bool markDirty = true);
     void setupAlgorithmComboBox();
     void setupKdfComboBox();
     void loadKdfParameters();
+    void updateKdfFields();
+    void activateChangeDecryptionTime();
 
+private:
+    enum FormatSelection { KDBX4, KDBX3 };
+    static const char* CD_DECRYPTION_TIME_PREFERENCE_KEY;
+
+    bool m_formatCompatibilityDirty = false;
     const QScopedPointer<Ui::DatabaseSettingsWidgetEncryption> m_ui;
 };
 

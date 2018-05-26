@@ -94,15 +94,26 @@ void DatabaseTabWidget::newDatabase()
     }
 
     auto* db = wizard.takeDatabase();
-    if (db) {
-        DatabaseManagerStruct dbStruct;
-        dbStruct.dbWidget = new DatabaseWidget(db, this);
-        insertDatabase(db, dbStruct);
+    if (!db) {
+        return;
+    }
+    Q_ASSERT(db->key());
+    Q_ASSERT(db->kdf());
+    if (!db->key() || !db->kdf()) {
+        MessageBox::critical(this, tr("Database creation error"),
+            tr("The created database has no key or KDF, refusing to save it.\n"
+               "This is definitely a bug, please report it to the developers."),
+            QMessageBox::Ok, QMessageBox::Ok);
+        return;
+    }
 
-        if (!saveDatabaseAs(db)) {
-            closeDatabase(db);
-            return;
-        }
+    DatabaseManagerStruct dbStruct;
+    dbStruct.dbWidget = new DatabaseWidget(db, this);
+    insertDatabase(db, dbStruct);
+
+    if (!saveDatabaseAs(db)) {
+        closeDatabase(db);
+        return;
     }
 }
 
