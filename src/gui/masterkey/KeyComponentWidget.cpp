@@ -132,11 +132,6 @@ void KeyComponentWidget::updateComponentDescription(const QString& description)
     m_ui->componentDescription->setText(description);
 }
 
-QSize KeyComponentWidget::minimumSizeHint() const
-{
-    return sizeHint();
-}
-
 void KeyComponentWidget::updateAddStatus(bool added)
 {
     if (added) {
@@ -180,6 +175,7 @@ void KeyComponentWidget::reset()
 
         QWidget* widget = componentEditWidget();
         m_ui->componentWidgetLayout->addWidget(widget);
+
         initComponentEditWidget(widget);
     }
 
@@ -197,6 +193,4 @@ void KeyComponentWidget::updateSize()
                 m_ui->stackedWidget->widget(i)->sizePolicy().horizontalPolicy(), QSizePolicy::Ignored);
         }
     }
-
-    m_ui->stackedWidget->adjustSize();
 }

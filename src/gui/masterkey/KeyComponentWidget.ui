@@ -6,11 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>276</width>
-    <height>79</height>
+    <width>354</width>
+    <height>106</height>
    </rect>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_5">
+   <property name="sizeConstraint">
+    <enum>QLayout::SetMinimumSize</enum>
+   </property>
    <property name="leftMargin">
     <number>0</number>
    </property>
@@ -44,7 +47,7 @@
       <item>
        <widget class="QStackedWidget" name="stackedWidget">
         <property name="currentIndex">
-         <number>0</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="addPage">
          <property name="sizePolicy">
@@ -110,7 +113,16 @@
           </property>
           <item>
            <widget class="QWidget" name="componentWidgetContainer" native="true">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <layout class="QVBoxLayout" name="componentWidgetLayout">
+             <property name="sizeConstraint">
+              <enum>QLayout::SetMinimumSize</enum>
+             </property>
              <property name="leftMargin">
               <number>0</number>
              </property>

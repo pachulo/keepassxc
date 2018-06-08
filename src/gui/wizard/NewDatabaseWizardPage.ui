@@ -2,19 +2,17 @@
 <ui version="4.0">
  <class>NewDatabaseWizardPage</class>
  <widget class="QWizardPage" name="NewDatabaseWizardPage">
-  <property name="geometry">
-   <rect>
-    <x>0</x>
-    <y>0</y>
-    <width>349</width>
-    <height>124</height>
-   </rect>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="windowTitle">
    <string>WizardPage</string>
   </property>
   <property name="title">
-   <string>Encryption Settings</string>
+   <string>En&amp;cryption Settings</string>
   </property>
   <property name="subTitle">
    <string>Here you can adjust the database encryption settings. Don't worry, you can change them later in the database settings.</string>
@@ -31,7 +29,7 @@
      <property name="sizeHint" stdset="0">
       <size>
        <width>20</width>
-       <height>40</height>
+       <height>15</height>
       </size>
      </property>
     </spacer>

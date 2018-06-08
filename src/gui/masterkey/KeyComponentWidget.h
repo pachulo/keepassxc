@@ -78,7 +78,6 @@ public:
     bool componentAdded() const;
     void changeVisiblePage(Page page);
     Page visiblePage() const;
-    QSize minimumSizeHint() const override;
 
 protected:
     /**

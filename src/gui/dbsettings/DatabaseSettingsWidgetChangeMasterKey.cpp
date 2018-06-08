@@ -37,6 +37,7 @@ DatabaseSettingsWidgetChangeMasterKey::DatabaseSettingsWidgetChangeMasterKey(QWi
 #endif
 {
     auto* vbox = new QVBoxLayout(this);
+    vbox->setSizeConstraint(QLayout::SetMinimumSize);
     vbox->addWidget(m_passwordEditWidget);
     vbox->addWidget(m_keyFileEditWidget);
 #ifdef WITH_XC_YUBIKEY
