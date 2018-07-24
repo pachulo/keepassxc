@@ -28,7 +28,7 @@ class QIODevice;
 class FileKey : public Key
 {
 public:
-    static Uuid UUID;
+    static QUuid UUID;
 
     enum Type
     {

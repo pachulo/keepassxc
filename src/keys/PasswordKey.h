@@ -25,7 +25,7 @@
 class PasswordKey : public Key
 {
 public:
-    static Uuid UUID;
+    static QUuid UUID;
 
     PasswordKey();
     explicit PasswordKey(const QString& password);

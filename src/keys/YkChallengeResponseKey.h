@@ -29,7 +29,7 @@ class YkChallengeResponseKey : public QObject, public ChallengeResponseKey
     Q_OBJECT
 
 public:
-    static Uuid UUID;
+    static QUuid UUID;
 
     explicit YkChallengeResponseKey(int slot = -1, bool blocking = false);
 

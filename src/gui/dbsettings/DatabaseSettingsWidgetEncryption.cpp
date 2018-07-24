@@ -159,7 +159,7 @@ void DatabaseSettingsWidgetEncryption::loadKdfParameters()
 
 void DatabaseSettingsWidgetEncryption::updateKdfFields()
 {
-    Uuid id = m_db->kdf()->uuid();
+    QUuid id = m_db->kdf()->uuid();
 
     bool memoryVisible = (id == KeePass2::KDF_ARGON2);
     m_ui->memoryUsageLabel->setVisible(memoryVisible);
@@ -242,7 +242,7 @@ bool DatabaseSettingsWidgetEncryption::save()
         }
     }
 
-    m_db->setCipher(Uuid(m_ui->algorithmComboBox->currentData().toByteArray()));
+    m_db->setCipher(QUuid(m_ui->algorithmComboBox->currentData().toByteArray()));
 
     // Save kdf parameters
     kdf->setRounds(m_ui->transformRoundsSpinBox->value());
@@ -275,7 +275,7 @@ void DatabaseSettingsWidgetEncryption::benchmarkTransformRounds(int millisecs)
     m_ui->transformRoundsSpinBox->setFocus();
 
     // Create a new kdf with the current parameters
-    auto kdf = KeePass2::uuidToKdf(Uuid(m_ui->kdfComboBox->currentData().toByteArray()));
+    auto kdf = KeePass2::uuidToKdf(QUuid(m_ui->kdfComboBox->currentData().toByteArray()));
     kdf->setRounds(m_ui->transformRoundsSpinBox->value());
     if (kdf->uuid() == KeePass2::KDF_ARGON2) {
         auto argon2Kdf = kdf.staticCast<Argon2Kdf>();
@@ -303,7 +303,7 @@ void DatabaseSettingsWidgetEncryption::changeKdf(int index)
         return;
     }
 
-    Uuid id(m_ui->kdfComboBox->itemData(index).toByteArray());
+    QUuid id(m_ui->kdfComboBox->itemData(index).toByteArray());
     m_db->setKdf(KeePass2::uuidToKdf(id));
     updateKdfFields();
     activateChangeDecryptionTime();
@@ -362,7 +362,7 @@ void DatabaseSettingsWidgetEncryption::updateFormatCompatibility(int index, bool
     }
 
      if (markDirty) {
-        Uuid kdfUuid(m_ui->compatibilitySelection->itemData(index).toByteArray());
+        QUuid kdfUuid(m_ui->compatibilitySelection->itemData(index).toByteArray());
         auto kdf = KeePass2::uuidToKdf(kdfUuid);
         m_db->setKdf(kdf);
 

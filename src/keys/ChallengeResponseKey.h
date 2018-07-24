@@ -19,24 +19,24 @@
 #ifndef KEEPASSX_CHALLENGE_RESPONSE_KEY_H
 #define KEEPASSX_CHALLENGE_RESPONSE_KEY_H
 
-#include "core/Uuid.h"
 #include <QByteArray>
+#include <QUuid>
 
 class ChallengeResponseKey
 {
 public:
-    explicit ChallengeResponseKey(const Uuid& uuid) : m_uuid(uuid) {}
+    explicit ChallengeResponseKey(const QUuid& uuid) : m_uuid(uuid) {}
     Q_DISABLE_COPY(ChallengeResponseKey);
     virtual ~ChallengeResponseKey() {}
     virtual QByteArray rawKey() const = 0;
     virtual bool challenge(const QByteArray& challenge) = 0;
-    virtual Uuid uuid() const
+    virtual QUuid uuid() const
     {
         return m_uuid;
     }
 
 private:
-    Uuid m_uuid;
+    QUuid m_uuid;
 };
 
 #endif // KEEPASSX_CHALLENGE_RESPONSE_KEY_H

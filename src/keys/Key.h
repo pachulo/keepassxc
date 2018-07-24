@@ -20,22 +20,22 @@
 #define KEEPASSX_KEY_H
 
 #include <QByteArray>
-#include "core/Uuid.h"
+#include <QUuid>
 
 class Key
 {
 public:
-    explicit Key(const Uuid& uuid) : m_uuid(uuid) {};
+    explicit Key(const QUuid& uuid) : m_uuid(uuid) {};
     Q_DISABLE_COPY(Key);
     virtual ~Key() = default;
     virtual QByteArray rawKey() const = 0;
-    inline virtual Uuid uuid() const
+    inline virtual QUuid uuid() const
     {
         return m_uuid;
     }
 
 private:
-    Uuid m_uuid;
+    QUuid m_uuid;
 };
 
 #endif // KEEPASSX_KEY_H

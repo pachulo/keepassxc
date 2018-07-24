@@ -25,7 +25,7 @@
 #include "crypto/CryptoHash.h"
 #include "crypto/kdf/AesKdf.h"
 
-Uuid CompositeKey::UUID(QByteArray::fromHex("76a7ae25a5424add98497c06be945b94"));
+QUuid CompositeKey::UUID(QByteArray::fromHex("76a7ae25a5424add98497c06be945b94"));
 
 CompositeKey::CompositeKey()
     : Key(UUID)

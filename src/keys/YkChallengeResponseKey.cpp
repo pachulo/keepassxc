@@ -30,7 +30,7 @@
 #include <QXmlStreamReader>
 #include <QtConcurrent>
 
-Uuid YkChallengeResponseKey::UUID(QByteArray::fromHex("e092495ce77d498b84a105ae0d955508"));
+QUuid YkChallengeResponseKey::UUID(QByteArray::fromHex("e092495ce77d498b84a105ae0d955508"));
 
 YkChallengeResponseKey::YkChallengeResponseKey(int slot, bool blocking)
     : ChallengeResponseKey(UUID)

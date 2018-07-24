@@ -19,7 +19,7 @@
 
 #include "crypto/CryptoHash.h"
 
-Uuid PasswordKey::UUID(QByteArray::fromHex("77e90411303a43f2b773853b05635ead"));
+QUuid PasswordKey::UUID(QByteArray::fromHex("77e90411303a43f2b773853b05635ead"));
 
 PasswordKey::PasswordKey()
     : Key(UUID)

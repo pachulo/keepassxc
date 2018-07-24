@@ -30,7 +30,7 @@
 class CompositeKey : public Key
 {
 public:
-    static Uuid UUID;
+    static QUuid UUID;
 
     CompositeKey();
     ~CompositeKey() override;
