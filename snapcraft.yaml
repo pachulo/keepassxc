@@ -7,11 +7,12 @@ description: |
   personal data management. It has a light interface, is cross-platform and
   published under the terms of the GNU General Public License.
 confinement: strict
+base: core18
 
 apps:
   keepassxc:
     command: desktop-launch keepassxc
-    plugs: [unity7, x11, opengl, gsettings, home, network, network-bind, removable-media, raw-usb]
+    plugs: [unity7, x11, opengl, gsettings, home, network, network-bind, removable-media, raw-usb, wayland, desktop-legacy]
     desktop: usr/share/applications/org.keepassxc.KeePassXC.desktop
   cli:
     command: keepassxc-cli
@@ -35,7 +36,8 @@ parts:
       - -DWITH_XC_ALL=ON
     build-packages:
       - g++
-      - libgcrypt20-18-dev
+        #- libgcrypt20-18-dev
+      - libgcrypt20-dev
       - libqt5x11extras5-dev
       - qtbase5-dev
       - qttools5-dev
@@ -50,13 +52,15 @@ parts:
     stage-packages:
       - dbus
       - qttranslations5-l10n # common translations
-      - libgcrypt20-18
+        #- libgcrypt20-18
+      - libgcrypt20
       - libykpers-1-1
       - libargon2-0
       - libsodium23
       - libxtst6
       - libqt5x11extras5
       - libusb-1.0-0
+      - qtwayland5
     override-build: |
       snapcraftctl build
       sed -i 's|Icon=keepassxc|Icon=${SNAP}/usr/share/icons/hicolor/256x256/apps/keepassxc.png|g' $SNAPCRAFT_PART_INSTALL/usr/share/applications/org.keepassxc.KeePassXC.desktop
@@ -67,4 +71,3 @@ parts:
     stage:
       - -opt
     after: [desktop-qt5]
-    
